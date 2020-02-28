@@ -1,0 +1,39 @@
+{
+  "setName": "Standard",
+  "randomBehaviour" : false,
+
+  "generateMakefile": true,
+  "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra",
+
+  "tests": [
+
+    {
+      "run": false,
+      "testName": "parameterCountInFunctionDefinition",
+      "count": [
+        "256"
+      ],
+      "minimum": "256",
+      "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.10) Arguments in one function call ([expr.call]) [256]."
+    },
+
+    {
+      "run": false,
+      "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
+      "count": [
+        "512"
+      ],
+      "minimum": "256",
+      "description": "(2.4) Nesting levels of parenthesized expressions ([expr.prim.paren]) within a full-expression [256]."
+    },
+
+    {
+      "run": true,
+      "testName" : "staticDataMemberOfClass",
+      "count" : ["4096"],
+      "minimum" : "1024",
+      "description" : "Static data members of a class ([class.static.data]) [1 024]."
+    }
+
+  ]
+}
