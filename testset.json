@@ -3,7 +3,11 @@
   "randomBehaviour" : false,
 
   "generateMakefile": true,
+  "compilationTimes": 1,
   "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra",
+  "timeFlags": "-f '%E,%M'",
+  "timedCompilation": true,
+  "resultFormat": "CSV",
 
   "tests": [
 
@@ -28,11 +32,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "staticDataMemberOfClass",
-      "count" : ["4096"],
+      "count" : ["128","4096"],
       "minimum" : "1024",
-      "description" : "Static data members of a class ([class.static.data]) [1 024]."
+      "description" : "(2.31) Static data members of a class ([class.static.data]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName" : "directBaseClassesOfClass",
+      "count" : ["2048"],
+      "minimum" : "1024",
+      "description" : "(2.27) Direct base classes for a single class ([class.derived]) [1 024]"
     }
 
   ]
