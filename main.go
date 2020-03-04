@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+
 type cppType struct {
 	name     string
 	minValue int
@@ -66,6 +67,8 @@ var funcMap = map[string]interface{}{
 // some constants
 const iostream = "#include <iostream>\n\n"
 
+
+
 //
 // utility functions
 //
@@ -106,13 +109,16 @@ func getFileName(fn string, count string) string {
 	return dir + "/" + testSet.SetName + "/" + fn + "-" + count + ".cpp"
 }
 
+
 //
 // Function generating code for the individual tests
 //
 
+
 //
 // (2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and
 // (2.10) Arguments in one function call ([expr.call]) [256].
+// (2.8) Identifiers with block scope declared in one block ([basic.scope.block]) [1 024].
 //
 func parameterCountInFunctionDefinition(count string) string {
 
@@ -285,7 +291,7 @@ func directBaseClassesOfClass(count string) string {
 
 	content += ") {}\n\tint m_i;};"
 
-	mainContent := "\nint main() {\n\t Derived d; std::cout << d.Derived::m_i << std::endl; }"
+	mainContent := "\nint main() {\n\t Derived d; std::cout << d.Derived::m_i << std::endl;\n}\n"
 
 	fmt.Println(content)
 
@@ -333,14 +339,16 @@ func main() {
 					fileName := filepath.Base(fileName)
 
 					makefileContent += testSet.Tests[i].TestName + "-" + currentCount + ": " + fileName + "\n"
-					if testSet.CompilationTimes > 1 {
-						if testSet.TimedCompilation {
-							if testSet.ResultFormat == "XML" {
-								makefileContent += "\t@echo '<test name=\"" + testSet.Tests[i].TestName + "-" + currentCount + "\">';\\\n"
-							} else {
-								makefileContent += "\t@echo " + testSet.Tests[i].TestName + "-" + currentCount + ";\\\n"
-							}
+
+					if testSet.TimedCompilation {
+						if testSet.ResultFormat == "XML" {
+							makefileContent += "\t@echo '<test name=\"" + testSet.Tests[i].TestName + "-" + currentCount + "\">';\\\n"
+						} else {
+							makefileContent += "\t@echo " + testSet.Tests[i].TestName + "-" + currentCount + ";\\\n"
 						}
+					}
+					if testSet.CompilationTimes > 1 {
+
 						makefileContent += "\tnumber=1 ; for number in "
 						for c := 1; c <= testSet.CompilationTimes; c++ {
 							makefileContent += strconv.Itoa(c) + " "

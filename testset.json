@@ -14,9 +14,7 @@
     {
       "run": false,
       "testName": "parameterCountInFunctionDefinition",
-      "count": [
-        "256"
-      ],
+      "count": [ "256", "1024", "2048", "4096", "8192", "16384" ],
       "minimum": "256",
       "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.10) Arguments in one function call ([expr.call]) [256]."
     },
@@ -24,27 +22,33 @@
     {
       "run": false,
       "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
-      "count": [
-        "512"
-      ],
+      "count": [ "512" ],
       "minimum": "256",
       "description": "(2.4) Nesting levels of parenthesized expressions ([expr.prim.paren]) within a full-expression [256]."
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "staticDataMemberOfClass",
-      "count" : ["128","4096"],
+      "count" : [ "1024", "2048" ,"4096", "8192", "16384" ],
       "minimum" : "1024",
       "description" : "(2.31) Static data members of a class ([class.static.data]) [1 024]."
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "directBaseClassesOfClass",
-      "count" : ["2048"],
+      "count" : [ "2048" ],
       "minimum" : "1024",
       "description" : "(2.27) Direct base classes for a single class ([class.derived]) [1 024]"
+    },
+
+    {
+      "run": false,
+      "testName" : "macroCountInOneTranslationUnit",
+      "count" : ["65536"],
+      "minimum" : "65536",
+      "description" : "(2.10) Macro identifiers ([cpp.replace]) simultaneously defined in one translation unit [65 536]."
     }
 
   ]
