@@ -16,7 +16,7 @@
       "testName": "parameterCountInFunctionDefinition",
       "count": [ "256", "1024", "2048", "4096", "8192", "16384" ],
       "minimum": "256",
-      "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.10) Arguments in one function call ([expr.call]) [256]."
+      "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.12) Arguments in one function call ([expr.call]) [256]."
     },
 
     {
@@ -28,9 +28,9 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "staticDataMemberOfClass",
-      "count" : [ "1024", "2048" ,"4096", "8192", "16384" ],
+      "count" : [ "1024", "2048", "4096", "8192", "16384" ],
       "minimum" : "1024",
       "description" : "(2.31) Static data members of a class ([class.static.data]) [1 024]."
     },
@@ -38,18 +38,44 @@
     {
       "run": false,
       "testName" : "directBaseClassesOfClass",
-      "count" : [ "2048" ],
+      "count" : ["1024", "2048", "4096", "8192", "16384"],
       "minimum" : "1024",
       "description" : "(2.27) Direct base classes for a single class ([class.derived]) [1 024]"
     },
 
     {
       "run": false,
+      "testName" : "directAndIndirectBaseClassesOfClass",
+      "count" : [ "16384", "32768", "65536" ],
+      "minimum" : "16384",
+      "description" : "(2.26) Direct and indirect base classes ([class.derived]) [16 384]"
+    },
+
+    {
+      "run": false,
       "testName" : "macroCountInOneTranslationUnit",
-      "count" : ["65536"],
+      "count" : ["2048", "4096", "8192", "16384", "32768", "65536", "131072"],
       "minimum" : "65536",
       "description" : "(2.10) Macro identifiers ([cpp.replace]) simultaneously defined in one translation unit [65 536]."
+    },
+
+    {
+      "run": false,
+      "testName" : "parametersInMacroDefinition",
+      "count" : ["256", "1024", "2048", "4096", "8192"],
+      "minimum" : "256",
+      "description" : "(2.13) Parameters in one macro definition ([cpp.replace]) [256] and (2.14) Arguments in one macro invocation ([cpp.replace]) [256]."
+    },
+
+    {
+      "run": true,
+      "testName" : "caseLabelsForSwitch",
+      "count" : ["16384"],
+      "minimum" : "16384",
+      "description" : "• (2.19) Case labels for a switch statement ([stmt.switch]) (excluding those for any nested switch statements) [16 384]."
     }
+
+
 
   ]
 }

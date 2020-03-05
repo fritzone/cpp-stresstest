@@ -62,6 +62,10 @@ var funcMap = map[string]interface{}{
 	"nestingLevelsOfParenthesizedExpressionsInAFullExpression": nestingLevelsOfParenthesizedExpressionsInAFullExpression,
 	"staticDataMemberOfClass":                                  staticDataMemberOfClass,
 	"directBaseClassesOfClass":                                 directBaseClassesOfClass,
+	"macroCountInOneTranslationUnit":							macroCountInOneTranslationUnit,
+	"directAndIndirectBaseClassesOfClass":						directAndIndirectBaseClassesOfClass,
+	"parametersInMacroDefinition":								parametersInMacroDefinition,
+	"caseLabelsForSwitch":										caseLabelsForSwitch,
 }
 
 // some constants
@@ -109,6 +113,16 @@ func getFileName(fn string, count string) string {
 	return dir + "/" + testSet.SetName + "/" + fn + "-" + count + ".cpp"
 }
 
+func writeTestFile(funName, count, content string) string {
+	fileName := getFileName(funName, count)
+	f, err := os.Create(fileName)
+	check(err)
+	defer f.Close()
+
+	f.WriteString(content)
+	fmt.Println("Wrote:", fileName)
+	return fileName
+}
 
 //
 // Function generating code for the individual tests
@@ -171,16 +185,7 @@ func parameterCountInFunctionDefinition(count string) string {
 	}
 	funContent += "\tstd::cout << v << std::endl; \n\treturn 0;\n}\n"
 
-	data := content + funContent
-
-	fileName := getFileName(trace(), count)
-	f, err := os.Create(fileName)
-	check(err)
-	defer f.Close()
-
-	f.WriteString(data)
-	fmt.Println("Wrote:", fileName)
-	return fileName
+	return writeTestFile(trace(), count, content + funContent)
 }
 
 //
@@ -205,15 +210,8 @@ func nestingLevelsOfParenthesizedExpressionsInAFullExpression(count string) stri
 
 	content += "\nint v = " + operation + ";\n"
 	content += "\tstd::cout << v << std::endl;\n\treturn 0;}"
-	fileName := getFileName(trace(), count)
-	f, err := os.Create(fileName)
-	check(err)
-	defer f.Close()
 
-	f.WriteString(content)
-	fmt.Println("Wrote:", fileName)
-
-	return fileName
+	return writeTestFile(trace(), count, content)
 }
 
 //
@@ -236,27 +234,16 @@ func staticDataMemberOfClass(count string) string {
 		classContent += "\t" + cppPrimitiveTypes[idx].name + " TestClass::m_member" + strconv.Itoa(i) + " = " + oneAsType(idx) + ";\n"
 	}
 
-	fileName := getFileName(trace(), count)
-
-	f, err := os.Create(fileName)
-	check(err)
-	defer f.Close()
-
 	mainContent := "\nint main() {\n\tTestClass tc; int v = 0;"
-
 	for i := 0; i < requiredMemberCount; i++ {
 		mainContent += "v += tc.m_member" + strconv.Itoa(i) + ";\n"
 	}
 	mainContent += "std::cout << v << std::endl;\n"
-
 	mainContent += "\n}\n"
 
 	content := iostream + classContent + mainContent
 
-	f.WriteString(content)
-	fmt.Println("Wrote:", fileName)
-
-	return fileName
+	return writeTestFile(trace(), count, content)
 }
 
 //
@@ -293,15 +280,157 @@ func directBaseClassesOfClass(count string) string {
 
 	mainContent := "\nint main() {\n\t Derived d; std::cout << d.Derived::m_i << std::endl;\n}\n"
 
-	fmt.Println(content)
+	return writeTestFile(trace(), count, iostream + content + mainContent)
+}
 
-	fileName := getFileName(trace(), count)
-	f, err := os.Create(fileName)
-	check(err)
-	defer f.Close()
-	f.WriteString(iostream + content + mainContent)
+//
+// (2.10) Macro identifiers ([cpp.replace]) simultaneously defined in one translation unit [65 536].
+//
+func macroCountInOneTranslationUnit(count string) string {
 
-	return fileName
+	requiredMacroCnt, _ := strconv.Atoi(count)
+
+	content := iostream + "\n#define V0 1\n"
+
+	for i:=1; i< requiredMacroCnt; i++ {
+		content += "#define V" + strconv.Itoa(i) + " V" + strconv.Itoa(i - 1) + " + 1\n"
+	}
+
+	content += "\nint main() { std::cout << V" + strconv.Itoa(requiredMacroCnt - 1) + "<< std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.26) Direct and indirect base classes ([class.derived]) [16 384]
+//
+
+type treeNode struct {
+	left *treeNode
+	right *treeNode
+	data string
+}
+
+func generateChildrensForNode(node *treeNode, currentLevel int, maxLevel int, totalCounter *int, currentName string) (*treeNode, *treeNode) {
+	//onCurrentLevel := int( math.Pow(2, float64(currentLevel- 1)) )
+
+	*totalCounter += 2
+
+	leftName := currentName + "L" + strconv.Itoa(currentLevel)
+	rightName := currentName + "R" + strconv.Itoa(currentLevel)
+
+	node.left = &treeNode{nil, nil, leftName}
+	node.right = &treeNode{nil, nil, rightName}
+
+	if currentLevel < maxLevel {
+		generateChildrensForNode(node.left, currentLevel + 1, maxLevel, totalCounter, leftName)
+		generateChildrensForNode(node.right, currentLevel + 1, maxLevel, totalCounter, rightName)
+	}
+
+	return node.left, node.right
+}
+
+func generateClassHierarchy(node *treeNode, classContent *string)  {
+	if node.left != nil {
+		generateClassHierarchy(node.left, classContent)
+	}
+
+	if node.right != nil {
+		generateClassHierarchy(node.right, classContent)
+	}
+
+	*classContent += "class " + node.data
+
+	if node.left != nil || node.right != nil {
+		*classContent += " : "
+	}
+
+	if node.left != nil {
+		*classContent += "public " + node.left.data
+	}
+	if node.right != nil {
+		*classContent += ", public " + node.right.data
+	}
+
+	*classContent += "\n{\npublic: \n\t" + node.data + "() : m_i(ctr ++) { std::cout << m_i << std::endl; }\nprivate:\n\tint m_i;\n};\n\n"
+}
+
+func directAndIndirectBaseClassesOfClass(count string) string {
+	requiredBaseCnt, _ := strconv.Atoi(count)
+	saveBaseCnt := requiredBaseCnt
+
+	maxLevel := 0
+	for requiredBaseCnt > 1 {
+		requiredBaseCnt /= 2
+		maxLevel += 1
+	}
+
+	root := &treeNode{nil, nil, "Base"}
+	totalCounter := 1
+
+	generateChildrensForNode(root, 1, maxLevel - 1, &totalCounter, root.data)
+
+
+	classContent := "static int ctr = 0;\n"
+
+	generateClassHierarchy(root, &classContent)
+
+	publist := ""
+
+	// now generate a few classes to fill the gap between the totally generated classes (totalCounter) and the actual required classes
+	for i:=0; i< saveBaseCnt - totalCounter; i++ {
+		classContent += "class Base" + strconv.Itoa(i) + " {\npublic:\n\tBase" + strconv.Itoa(i) + "() : m_i" + strconv.Itoa(i) + "(ctr ++) {" +
+			"\n\t\tstd::cout << m_i" + strconv.Itoa(i) + " << std::endl;\n\t}\n" +
+			"\tint m_i" + strconv.Itoa(i) + ";\n};\n\n"
+
+		publist += ", public Base" + strconv.Itoa(i)
+	}
+
+	classContent += "class Derived : public Base" + publist + "\n{\npublic:\n\tDerived() : m_i(ctr) {}\n\tint m_i;\n};\n"
+	mainContent := "\nint main() {\n\tDerived d; std::cout << d.m_i << std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, iostream + classContent + mainContent)
+}
+
+//
+// (2.13) Parameters in one macro definition ([cpp.replace]) [256] and (2.14) Arguments in one macro invocation ([cpp.replace]) [256].
+//
+func parametersInMacroDefinition(count string) string {
+	requiredBaseCnt, _ := strconv.Atoi(count)
+
+	content := "#define M("
+
+	for i:=0; i<requiredBaseCnt; i++ {
+		content += "p" + strconv.Itoa(i)
+		if i < requiredBaseCnt - 1 {
+			content += ", "
+		} else {
+			content += ") "
+		}
+	}
+	for i:=0; i<requiredBaseCnt; i++ {
+		content += "p" + strconv.Itoa(i)
+		if i < requiredBaseCnt - 1 {
+			content += "+"
+		}
+	}
+
+	content += "\nint main() {\n\t int v = M("
+
+	for i:=0; i<requiredBaseCnt; i++ {
+		content += "1"
+		if i < requiredBaseCnt - 1 {
+			content += ", "
+		} else {
+			content += ");\n\tstd::cout << v << std::endl;\n}\n"
+		}
+	}
+
+	return writeTestFile(trace(), count, iostream + content)
+}
+
+func caseLabelsForSwitch(count string) string {
+	
 }
 
 //
