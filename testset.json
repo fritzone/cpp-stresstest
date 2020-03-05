@@ -3,6 +3,7 @@
   "randomBehaviour" : false,
 
   "generateMakefile": true,
+  "generateCMakeListsTxt": true,
   "compilationTimes": 1,
   "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra",
   "timeFlags": "-f '%E,%M'",
@@ -60,7 +61,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "parametersInMacroDefinition",
       "count" : ["256", "1024", "2048", "4096", "8192"],
       "minimum" : "256",
@@ -68,7 +69,7 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "caseLabelsForSwitch",
       "count" : ["16384"],
       "minimum" : "16384",

@@ -42,15 +42,16 @@ type TestEntry struct {
 }
 
 type TestSet struct {
-	SetName          string      `json:"setName"`
-	RandomBehaviour  bool        `json:"randomBehaviour"`
-	GenerateMakefile bool        `json:"generateMakefile"`
-	CompilerFlags    string      `json:"compilerFlags"`
-	CompilationTimes int         `json:"compilationTimes"`
-	TimeFlags        string      `json:"timeFlags"`
-	TimedCompilation bool        `json:"timedCompilation"`
-	ResultFormat     string      `json:"resultFormat"`
-	Tests            []TestEntry `json:"tests"`
+	SetName          		string      `json:"setName"`
+	RandomBehaviour  		bool        `json:"randomBehaviour"`
+	GenerateMakefile 		bool        `json:"generateMakefile"`
+	GenerateCMakeListsTxt 	bool 		`json:"generateCMakeListsTxt"`
+	CompilerFlags    		string      `json:"compilerFlags"`
+	CompilationTimes 		int         `json:"compilationTimes"`
+	TimeFlags        		string      `json:"timeFlags"`
+	TimedCompilation 		bool        `json:"timedCompilation"`
+	ResultFormat     		string      `json:"resultFormat"`
+	Tests            		[]TestEntry `json:"tests"`
 }
 
 // this is the actual test set object
@@ -430,7 +431,7 @@ func parametersInMacroDefinition(count string) string {
 }
 
 func caseLabelsForSwitch(count string) string {
-	
+	return ""
 }
 
 //
@@ -459,19 +460,23 @@ func main() {
 	all := "all: "
 	clean := "clean: \n"
 
+	cmakeContent := "cmake_minimum_required(VERSION 2.8.9)\n\n" + "project(" + testSet.SetName + ")\n\n"
+
 	for i := 0; i < len(testSet.Tests); i++ {
 		if testSet.Tests[i].Run {
 			for cnt := 0; cnt < len(testSet.Tests[i].Count); cnt++ {
 				currentCount := testSet.Tests[i].Count[cnt]
 				fileName := funcMap[testSet.Tests[i].TestName].(func(string) string)(currentCount)
+				fileName = filepath.Base(fileName)
+
+				currentTestName := testSet.Tests[i].TestName + "-" + currentCount
 				if testSet.GenerateMakefile {
-					fileName := filepath.Base(fileName)
 
 					makefileContent += testSet.Tests[i].TestName + "-" + currentCount + ": " + fileName + "\n"
 
 					if testSet.TimedCompilation {
 						if testSet.ResultFormat == "XML" {
-							makefileContent += "\t@echo '<test name=\"" + testSet.Tests[i].TestName + "-" + currentCount + "\">';\\\n"
+							makefileContent += "\t@echo '<test name=\"" + currentTestName + "\">';\\\n"
 						} else {
 							makefileContent += "\t@echo " + testSet.Tests[i].TestName + "-" + currentCount + ";\\\n"
 						}
@@ -504,6 +509,10 @@ func main() {
 
 					clean += "\trm " + testSet.Tests[i].TestName + "-" + currentCount + "\n"
 				}
+
+				if testSet.GenerateCMakeListsTxt {
+					cmakeContent += "add_executable(" + currentTestName + " " + fileName + " )\n"
+				}
 			}
 		}
 	}
@@ -515,5 +524,14 @@ func main() {
 		defer f.Close()
 
 		f.WriteString(makefileHeader + "\n" + all + "\n\n" + makefileContent + "\n\n" + clean + "\n")
+	}
+
+	if testSet.GenerateCMakeListsTxt {
+		cmakeFileName := dir + "/" + testSet.SetName + "/CMakeLists.txt"
+		f, err := os.Create(cmakeFileName)
+		check(err)
+		defer f.Close()
+
+		f.WriteString(cmakeContent)
 	}
 }
