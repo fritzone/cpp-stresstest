@@ -67,12 +67,13 @@ var funcMap = map[string]interface{}{
 	"directAndIndirectBaseClassesOfClass":						directAndIndirectBaseClassesOfClass,
 	"parametersInMacroDefinition":								parametersInMacroDefinition,
 	"caseLabelsForSwitch":										caseLabelsForSwitch,
+	"nonStaticDataMembersOfClass":								nonStaticDataMembersOfClass,
+	"enumerationConstantsInEnum":								enumerationConstantsInEnum,
+	"friendsOfAClass":											friendsOfAClass,
 }
 
 // some constants
 const iostream = "#include <iostream>\n\n"
-
-
 
 //
 // utility functions
@@ -216,7 +217,7 @@ func nestingLevelsOfParenthesizedExpressionsInAFullExpression(count string) stri
 }
 
 //
-// Static data members of a class ([class.static.data]) [1 024].
+// (2.31) Static data members of a class ([class.static.data]) [1 024].
 //
 func staticDataMemberOfClass(count string) string {
 	requiredMemberCount, _ := strconv.Atoi(count)
@@ -234,6 +235,33 @@ func staticDataMemberOfClass(count string) string {
 		idx := i % len(cppPrimitiveTypes)
 		classContent += "\t" + cppPrimitiveTypes[idx].name + " TestClass::m_member" + strconv.Itoa(i) + " = " + oneAsType(idx) + ";\n"
 	}
+
+	mainContent := "\nint main() {\n\tTestClass tc; int v = 0;"
+	for i := 0; i < requiredMemberCount; i++ {
+		mainContent += "v += tc.m_member" + strconv.Itoa(i) + ";\n"
+	}
+	mainContent += "std::cout << v << std::endl;\n"
+	mainContent += "\n}\n"
+
+	content := iostream + classContent + mainContent
+
+	return writeTestFile(trace(), count, content)
+}
+
+
+//
+// (2.20) Non-static data members (including inherited ones) in a single class ([class.mem]) [16 384]
+//
+func nonStaticDataMembersOfClass(count string) string {
+	requiredMemberCount, _ := strconv.Atoi(count)
+	classContent := "class TestClass {\npublic:\n"
+
+	for i := 0; i < requiredMemberCount; i++ {
+		idx := i % len(cppPrimitiveTypes)
+		classContent += "\t" + cppPrimitiveTypes[idx].name + " m_member" + strconv.Itoa(i) + " = " + oneAsType(idx) + ";\n"
+	}
+
+	classContent += "\n};\n"
 
 	mainContent := "\nint main() {\n\tTestClass tc; int v = 0;"
 	for i := 0; i < requiredMemberCount; i++ {
@@ -430,8 +458,91 @@ func parametersInMacroDefinition(count string) string {
 	return writeTestFile(trace(), count, iostream + content)
 }
 
+//
+// (2.19) Case labels for a switch statement ([stmt.switch]) (excluding those for any nested switch statements) [16 384].
+//
 func caseLabelsForSwitch(count string) string {
-	return ""
+	requiredLabelCnt, _ := strconv.Atoi(count)
+
+	content :=  "\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
+	for i:= 0; i<requiredLabelCnt; i++ {
+		content += "\t\tcase " + strconv.Itoa(i) + ": std::cout << " + strconv.Itoa(i * i) + " << std::endl; break;\n"
+	}
+	content += "}\n}\n"
+
+	return writeTestFile(trace(), count, iostream + content)
+}
+
+//
+// (2.22) Enumeration constants in a single enumeration ([dcl.enum]) [4 096].
+//
+func enumerationConstantsInEnum(count string) string {
+	requiredEnumCnt, _ := strconv.Atoi(count)
+
+	content :=  "\n#include<cstdlib>\n\n enum Stuff {"
+	for i:= 0; i< requiredEnumCnt; i++ {
+		content += "\t\tV" + strconv.Itoa(i) + " = " + strconv.Itoa(i) +",\n"
+	}
+
+	content += "};\nint main() {\nStuff v = V" + strconv.Itoa(rand.Intn(requiredEnumCnt))
+	content += ";\nstd::cout << v << std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, iostream + content)
+}
+
+//
+// (2.32) Friend declarations in a class ([class.friend]) [4 096].
+//
+func friendsOfAClass(count string) string {
+
+	requiredFriendCnt, _ := strconv.Atoi(count)
+	friendClassCount := requiredFriendCnt / 2
+	friendFunctionCount := requiredFriendCnt / 2
+
+	// make it whole again in case if odd number
+	friendFunctionCount += requiredFriendCnt - friendFunctionCount - friendClassCount
+
+	content := iostream + "\n" + "class Friendly;"
+
+	// forward declare the classes and functions
+
+	for i:=0; i<friendClassCount; i++ {
+		content += "\nclass FriendClass" + strconv.Itoa(i) + ";"
+	}
+	for i:= 0; i<friendFunctionCount; i++ {
+		content += "\n int friendFunction" + strconv.Itoa(i) + "(const Friendly&);"
+	}
+
+	// the actual friendly class with lots of friends
+	content += "\n\nclass Friendly {\n\tint m_ctr = 1;\n"
+	for i:=0; i<friendClassCount; i++ {
+		content += "\tfriend class FriendClass" + strconv.Itoa(i) + ";\n"
+	}
+	for i:=0; i<friendFunctionCount; i++ {
+		content += "\tfriend int friendFunction"+ strconv.Itoa(i) + "(const Friendly&);\n"
+	}
+
+	content += "};\n"
+	// generate the classes and the functions
+	for i:=0; i<friendClassCount; i++ {
+		content += "\nclass FriendClass" + strconv.Itoa(i) + " {\npublic:\n\tint m_ctr;\n\tFriendClass" + strconv.Itoa(i) + "(const Friendly& f) : m_ctr(f.m_ctr) {}\n};"
+	}
+	for i:=0; i<friendFunctionCount; i++ {
+		content += "\nint friendFunction"+ strconv.Itoa(i) + "(const Friendly& f) {\n\treturn f.m_ctr;\n}\n"
+	}
+
+	content += "int main() { int v = 0;\n\tFriendly f;\n"
+	for i:=0; i< friendClassCount; i++ {
+		content += "\t{FriendClass" + strconv.Itoa(i) + " c(f);  v += c.m_ctr;}\n"
+	}
+
+	for i:= 0;i <friendFunctionCount; i++ {
+		content += "\tv += friendFunction" + strconv.Itoa(i) + "(f);\n"
+	}
+
+	content += "\n\tstd::cout << v << std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, content)
 }
 
 //

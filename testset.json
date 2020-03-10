@@ -5,7 +5,7 @@
   "generateMakefile": true,
   "generateCMakeListsTxt": true,
   "compilationTimes": 1,
-  "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra",
+  "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra -std=c++11",
   "timeFlags": "-f '%E,%M'",
   "timedCompilation": true,
   "resultFormat": "CSV",
@@ -61,7 +61,7 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "parametersInMacroDefinition",
       "count" : ["256", "1024", "2048", "4096", "8192"],
       "minimum" : "256",
@@ -73,9 +73,32 @@
       "testName" : "caseLabelsForSwitch",
       "count" : ["16384"],
       "minimum" : "16384",
-      "description" : "• (2.19) Case labels for a switch statement ([stmt.switch]) (excluding those for any nested switch statements) [16 384]."
-    }
+      "description" : "(2.19) Case labels for a switch statement ([stmt.switch]) (excluding those for any nested switch statements) [16 384]."
+    },
 
+    {
+      "run": false,
+      "testName" : "nonStaticDataMembersOfClass",
+      "count" : ["16384"],
+      "minimum" : "16384",
+      "description" : "(2.20) Non-static data members (including inherited ones) in a single class ([class.mem]) [16 384]"
+    },
+
+    {
+      "run": false,
+      "testName" : "enumerationConstantsInEnum",
+      "count" : ["4096"],
+      "minimum" : "4096",
+      "description" : "(2.22) Enumeration constants in a single enumeration ([dcl.enum]) [4 096]."
+    },
+
+    {
+      "run": true,
+      "testName" : "friendsOfAClass",
+      "count" : ["4096", "8192"],
+      "minimum" : "4096",
+      "description" : "(2.32) Friend declarations in a class ([class.friend]) [4 096]."
+    }
 
 
   ]
