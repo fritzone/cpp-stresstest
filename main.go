@@ -560,7 +560,7 @@ func friendsOfAClass(count string) string {
 func nestingOfStatements(count string) string {
 	requiredNestingDepth, _ := strconv.Atoi(count)
 
-	content := iostream + "\nint main() {\n"
+	content := iostream + "int leave() { exit(0); return 1; }\nint main() {\n"
 
 	forCounter := 0
 	modCounter := 2
@@ -595,7 +595,7 @@ func nestingOfStatements(count string) string {
 		}
 	}
 
-	content += repeat(" ", requiredNestingDepth) + "std::cout << (" + previousFor + " - 1) * 2 << std::endl;\n}\n"
+	content += repeat(" ", requiredNestingDepth) + "std::cout << (" + previousFor + " - 1) * 2 << std::endl << leave();\n}\n"
 
 	fmt.Println(content)
 

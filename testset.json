@@ -103,7 +103,7 @@
     {
       "run": true,
       "testName" : "nestingOfStatements",
-      "count" : ["128"],
+      "count" : ["256", "512"],
       "minimum" : "256",
       "description" : "(2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256]."
     }
