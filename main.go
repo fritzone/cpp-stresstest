@@ -70,6 +70,7 @@ var funcMap = map[string]interface{}{
 	"nonStaticDataMembersOfClass":								nonStaticDataMembersOfClass,
 	"enumerationConstantsInEnum":								enumerationConstantsInEnum,
 	"friendsOfAClass":											friendsOfAClass,
+	"nestingOfStatements":										nestingOfStatements,
 }
 
 // some constants
@@ -124,6 +125,14 @@ func writeTestFile(funName, count, content string) string {
 	f.WriteString(content)
 	fmt.Println("Wrote:", fileName)
 	return fileName
+}
+
+func repeat(what string, times int) string {
+	result := ""
+	for i:=0; i<times; i++ {
+		result += what
+	}
+	return result
 }
 
 //
@@ -541,6 +550,54 @@ func friendsOfAClass(count string) string {
 	}
 
 	content += "\n\tstd::cout << v << std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256].
+//
+func nestingOfStatements(count string) string {
+	requiredNestingDepth, _ := strconv.Atoi(count)
+
+	content := iostream + "\nint main() {\n"
+
+	forCounter := 0
+	modCounter := 2
+	operation := 0
+	currentFor := "f" + strconv.Itoa(forCounter)
+	previousFor := currentFor
+
+	for i:=0; i<requiredNestingDepth; i++ {
+
+		// convention: generate 1 for, which contains one if. Should be enough
+		if operation == 0 {
+			content += repeat(" ", i) + "for (int " + currentFor + " = "
+			if previousFor == currentFor {
+				content += "1"
+			} else {
+				content += previousFor
+			}
+			content +="; " + currentFor + "<" + count + "; " + currentFor+ "++ )\n"
+		}
+
+		if operation == 1 {
+			content += repeat(" ", i) + "if (" + currentFor + " % " + strconv.Itoa(modCounter) + " == 0)\n"
+		}
+
+		operation ++
+		if operation == 2 {
+			operation = 0
+			previousFor = currentFor
+			forCounter ++
+			modCounter ++
+			currentFor = "f" + strconv.Itoa(forCounter)
+		}
+	}
+
+	content += repeat(" ", requiredNestingDepth) + "std::cout << (" + previousFor + " - 1) * 2 << std::endl;\n}\n"
+
+	fmt.Println(content)
 
 	return writeTestFile(trace(), count, content)
 }

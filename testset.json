@@ -93,13 +93,20 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "friendsOfAClass",
       "count" : ["4096", "8192"],
       "minimum" : "4096",
       "description" : "(2.32) Friend declarations in a class ([class.friend]) [4 096]."
-    }
+    },
 
+    {
+      "run": true,
+      "testName" : "nestingOfStatements",
+      "count" : ["128"],
+      "minimum" : "256",
+      "description" : "(2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256]."
+    }
 
   ]
 }
