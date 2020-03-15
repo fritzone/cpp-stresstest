@@ -71,6 +71,7 @@ var funcMap = map[string]interface{}{
 	"enumerationConstantsInEnum":								enumerationConstantsInEnum,
 	"friendsOfAClass":											friendsOfAClass,
 	"nestingOfStatements":										nestingOfStatements,
+	"nestingOfClasses":											nestingOfClasses,
 }
 
 // some constants
@@ -597,11 +598,52 @@ func nestingOfStatements(count string) string {
 
 	content += repeat(" ", requiredNestingDepth) + "std::cout << (" + previousFor + " - 1) * 2 << std::endl << leave();\n}\n"
 
-	fmt.Println(content)
-
 	return writeTestFile(trace(), count, content)
 }
 
+//
+// (2.23) Levels of nested class definitions ([class.nest]) in a single member-specification [256].
+//
+func nestingOfClasses(count string) string {
+
+	content := iostream
+
+	requiredNestingDepth, _ := strconv.Atoi(count)
+	for i:=0; i<requiredNestingDepth; i++ {
+		if i==0 {
+			content += "class C0 {\n" + "public: int m_i0 = 0 ;\n"
+		} else {
+			content += repeat(" ", i) +"class C" + strconv.Itoa(i) + " {\n" + repeat(" ", i + 1) + "public: " +
+				"C" + strconv.Itoa(i) + "(const volatile C" + strconv.Itoa(i - 1) + " &c) : m_i" + strconv.Itoa(i) + "(" +
+				"c.m_i" + strconv.Itoa(i - 1) + " + 1) {}\n" + repeat(" ", i+1) + "int m_i" + strconv.Itoa(i) + ";\n"
+		}
+	}
+
+	for i:=0; i<requiredNestingDepth; i++ {
+		content += repeat(" ", requiredNestingDepth - i - 1) + "};\n"
+	}
+
+	content += "\nint main() {\n\tvolatile C0 v0;"
+
+	for i:= 1; i<requiredNestingDepth; i++ {
+		content += "\n\tvolatile "
+		for j:=0 ;j <= i; j++ {
+			content += "C" + strconv.Itoa(j)
+			if j < i {
+				content += "::"
+			} else {
+				content += " v" + strconv.Itoa(i) + "(v" + strconv.Itoa(i - 1)+ ");"
+			}
+
+		}
+	}
+
+	content += "\n\tstd::cout << v" + strconv.Itoa(requiredNestingDepth - 1) + ".m_i" + strconv.Itoa(requiredNestingDepth - 1) + " + 1 << std::endl;"
+
+	content += "\n}"
+
+	return writeTestFile(trace(), count, content)
+}
 //
 // Main
 //

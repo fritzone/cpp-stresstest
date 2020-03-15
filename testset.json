@@ -101,12 +101,21 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "nestingOfStatements",
-      "count" : ["256", "512"],
+      "count" : ["256", "512", "1024"],
       "minimum" : "256",
       "description" : "(2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256]."
+    },
+
+    {
+      "run": true,
+      "testName" : "nestingOfClasses",
+      "count" : ["256"],
+      "minimum" : "256",
+      "description" : "(2.23) Levels of nested class definitions ([class.nest]) in a single member-specification [256]."
     }
+
 
   ]
 }
