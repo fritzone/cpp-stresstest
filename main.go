@@ -72,6 +72,7 @@ var funcMap = map[string]interface{}{
 	"friendsOfAClass":											friendsOfAClass,
 	"nestingOfStatements":										nestingOfStatements,
 	"nestingOfClasses":											nestingOfClasses,
+	"accessControlDeclarationsInClass":							accessControlDeclarationsInClass,
 }
 
 // some constants
@@ -644,6 +645,34 @@ func nestingOfClasses(count string) string {
 
 	return writeTestFile(trace(), count, content)
 }
+
+//
+// (2.33) Access control declarations in a class ([class.access.spec]) [4 096].
+//
+func accessControlDeclarationsInClass(count string) string {
+
+	content := iostream + "class C {\n"
+
+	var modifiers = []string{"public", "private", "protected"}
+	requiredCount, _ := strconv.Atoi(count)
+	m := make(map[string]int)
+	for _,i := range modifiers {
+		m[i] = 0
+	}
+	for i:=0; i<requiredCount; i++ {
+		content +="\n" + modifiers[i % len(modifiers)] + ":\n\tint m_" + modifiers[i % len(modifiers)] + strconv.Itoa(m[modifiers[i % len(modifiers)]]) + " = 1;"
+		m[modifiers[i % len(modifiers)]] += 1
+	}
+
+	content += "\n};\n"
+
+	fmt.Println(content)
+
+	return writeTestFile(trace(), count, content)
+
+}
+
+
 //
 // Main
 //

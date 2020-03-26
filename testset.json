@@ -21,7 +21,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
       "count": [ "512" ],
       "minimum": "256",
@@ -87,7 +87,7 @@
     {
       "run": false,
       "testName" : "enumerationConstantsInEnum",
-      "count" : ["4096"],
+      "count" : ["4096", "8192"],
       "minimum" : "4096",
       "description" : "(2.22) Enumeration constants in a single enumeration ([dcl.enum]) [4 096]."
     },
@@ -103,19 +103,25 @@
     {
       "run": false,
       "testName" : "nestingOfStatements",
-      "count" : ["256", "512", "1024"],
+      "count" : ["256", "512"],
       "minimum" : "256",
       "description" : "(2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256]."
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "nestingOfClasses",
-      "count" : ["256"],
+      "count" : ["256", "512", "1024"],
       "minimum" : "256",
       "description" : "(2.23) Levels of nested class definitions ([class.nest]) in a single member-specification [256]."
+    },
+
+    {
+      "run": true,
+      "testName" : "accessControlDeclarationsInClass",
+      "count" : ["1024", "4096"],
+      "minimum" : "4096",
+      "description" : "(2.33) Access control declarations in a class ([class.access.spec]) [4 096]."
     }
-
-
   ]
 }
