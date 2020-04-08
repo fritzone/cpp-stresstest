@@ -12,7 +12,6 @@ import (
 	"strings"
 )
 
-
 type cppType struct {
 	name     string
 	minValue int
@@ -42,16 +41,16 @@ type TestEntry struct {
 }
 
 type TestSet struct {
-	SetName          		string      `json:"setName"`
-	RandomBehaviour  		bool        `json:"randomBehaviour"`
-	GenerateMakefile 		bool        `json:"generateMakefile"`
-	GenerateCMakeListsTxt 	bool 		`json:"generateCMakeListsTxt"`
-	CompilerFlags    		string      `json:"compilerFlags"`
-	CompilationTimes 		int         `json:"compilationTimes"`
-	TimeFlags        		string      `json:"timeFlags"`
-	TimedCompilation 		bool        `json:"timedCompilation"`
-	ResultFormat     		string      `json:"resultFormat"`
-	Tests            		[]TestEntry `json:"tests"`
+	SetName               string      `json:"setName"`
+	RandomBehaviour       bool        `json:"randomBehaviour"`
+	GenerateMakefile      bool        `json:"generateMakefile"`
+	GenerateCMakeListsTxt bool        `json:"generateCMakeListsTxt"`
+	CompilerFlags         string      `json:"compilerFlags"`
+	CompilationTimes      int         `json:"compilationTimes"`
+	TimeFlags             string      `json:"timeFlags"`
+	TimedCompilation      bool        `json:"timedCompilation"`
+	ResultFormat          string      `json:"resultFormat"`
+	Tests                 []TestEntry `json:"tests"`
 }
 
 // this is the actual test set object
@@ -63,16 +62,16 @@ var funcMap = map[string]interface{}{
 	"nestingLevelsOfParenthesizedExpressionsInAFullExpression": nestingLevelsOfParenthesizedExpressionsInAFullExpression,
 	"staticDataMemberOfClass":                                  staticDataMemberOfClass,
 	"directBaseClassesOfClass":                                 directBaseClassesOfClass,
-	"macroCountInOneTranslationUnit":							macroCountInOneTranslationUnit,
-	"directAndIndirectBaseClassesOfClass":						directAndIndirectBaseClassesOfClass,
-	"parametersInMacroDefinition":								parametersInMacroDefinition,
-	"caseLabelsForSwitch":										caseLabelsForSwitch,
-	"nonStaticDataMembersOfClass":								nonStaticDataMembersOfClass,
-	"enumerationConstantsInEnum":								enumerationConstantsInEnum,
-	"friendsOfAClass":											friendsOfAClass,
-	"nestingOfStatements":										nestingOfStatements,
-	"nestingOfClasses":											nestingOfClasses,
-	"accessControlDeclarationsInClass":							accessControlDeclarationsInClass,
+	"macroCountInOneTranslationUnit":                           macroCountInOneTranslationUnit,
+	"directAndIndirectBaseClassesOfClass":                      directAndIndirectBaseClassesOfClass,
+	"parametersInMacroDefinition":                              parametersInMacroDefinition,
+	"caseLabelsForSwitch":                                      caseLabelsForSwitch,
+	"nonStaticDataMembersOfClass":                              nonStaticDataMembersOfClass,
+	"enumerationConstantsInEnum":                               enumerationConstantsInEnum,
+	"friendsOfAClass":                                          friendsOfAClass,
+	"nestingOfStatements":                                      nestingOfStatements,
+	"nestingOfClasses":                                         nestingOfClasses,
+	"accessControlDeclarationsInClass":                         accessControlDeclarationsInClass,
 }
 
 // some constants
@@ -131,7 +130,7 @@ func writeTestFile(funName, count, content string) string {
 
 func repeat(what string, times int) string {
 	result := ""
-	for i:=0; i<times; i++ {
+	for i := 0; i < times; i++ {
 		result += what
 	}
 	return result
@@ -140,7 +139,6 @@ func repeat(what string, times int) string {
 //
 // Function generating code for the individual tests
 //
-
 
 //
 // (2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and
@@ -198,7 +196,7 @@ func parameterCountInFunctionDefinition(count string) string {
 	}
 	funContent += "\tstd::cout << v << std::endl; \n\treturn 0;\n}\n"
 
-	return writeTestFile(trace(), count, content + funContent)
+	return writeTestFile(trace(), count, content+funContent)
 }
 
 //
@@ -258,7 +256,6 @@ func staticDataMemberOfClass(count string) string {
 
 	return writeTestFile(trace(), count, content)
 }
-
 
 //
 // (2.20) Non-static data members (including inherited ones) in a single class ([class.mem]) [16 384]
@@ -320,7 +317,7 @@ func directBaseClassesOfClass(count string) string {
 
 	mainContent := "\nint main() {\n\t Derived d; std::cout << d.Derived::m_i << std::endl;\n}\n"
 
-	return writeTestFile(trace(), count, iostream + content + mainContent)
+	return writeTestFile(trace(), count, iostream+content+mainContent)
 }
 
 //
@@ -332,11 +329,11 @@ func macroCountInOneTranslationUnit(count string) string {
 
 	content := iostream + "\n#define V0 1\n"
 
-	for i:=1; i< requiredMacroCnt; i++ {
-		content += "#define V" + strconv.Itoa(i) + " V" + strconv.Itoa(i - 1) + " + 1\n"
+	for i := 1; i < requiredMacroCnt; i++ {
+		content += "#define V" + strconv.Itoa(i) + " V" + strconv.Itoa(i-1) + " + 1\n"
 	}
 
-	content += "\nint main() { std::cout << V" + strconv.Itoa(requiredMacroCnt - 1) + "<< std::endl;\n}\n"
+	content += "\nint main() { std::cout << V" + strconv.Itoa(requiredMacroCnt-1) + "<< std::endl;\n}\n"
 
 	return writeTestFile(trace(), count, content)
 }
@@ -346,9 +343,9 @@ func macroCountInOneTranslationUnit(count string) string {
 //
 
 type treeNode struct {
-	left *treeNode
+	left  *treeNode
 	right *treeNode
-	data string
+	data  string
 }
 
 func generateChildrensForNode(node *treeNode, currentLevel int, maxLevel int, totalCounter *int, currentName string) (*treeNode, *treeNode) {
@@ -363,14 +360,14 @@ func generateChildrensForNode(node *treeNode, currentLevel int, maxLevel int, to
 	node.right = &treeNode{nil, nil, rightName}
 
 	if currentLevel < maxLevel {
-		generateChildrensForNode(node.left, currentLevel + 1, maxLevel, totalCounter, leftName)
-		generateChildrensForNode(node.right, currentLevel + 1, maxLevel, totalCounter, rightName)
+		generateChildrensForNode(node.left, currentLevel+1, maxLevel, totalCounter, leftName)
+		generateChildrensForNode(node.right, currentLevel+1, maxLevel, totalCounter, rightName)
 	}
 
 	return node.left, node.right
 }
 
-func generateClassHierarchy(node *treeNode, classContent *string)  {
+func generateClassHierarchy(node *treeNode, classContent *string) {
 	if node.left != nil {
 		generateClassHierarchy(node.left, classContent)
 	}
@@ -408,8 +405,7 @@ func directAndIndirectBaseClassesOfClass(count string) string {
 	root := &treeNode{nil, nil, "Base"}
 	totalCounter := 1
 
-	generateChildrensForNode(root, 1, maxLevel - 1, &totalCounter, root.data)
-
+	generateChildrensForNode(root, 1, maxLevel-1, &totalCounter, root.data)
 
 	classContent := "static int ctr = 0;\n"
 
@@ -418,7 +414,7 @@ func directAndIndirectBaseClassesOfClass(count string) string {
 	publist := ""
 
 	// now generate a few classes to fill the gap between the totally generated classes (totalCounter) and the actual required classes
-	for i:=0; i< saveBaseCnt - totalCounter; i++ {
+	for i := 0; i < saveBaseCnt-totalCounter; i++ {
 		classContent += "class Base" + strconv.Itoa(i) + " {\npublic:\n\tBase" + strconv.Itoa(i) + "() : m_i" + strconv.Itoa(i) + "(ctr ++) {" +
 			"\n\t\tstd::cout << m_i" + strconv.Itoa(i) + " << std::endl;\n\t}\n" +
 			"\tint m_i" + strconv.Itoa(i) + ";\n};\n\n"
@@ -429,7 +425,7 @@ func directAndIndirectBaseClassesOfClass(count string) string {
 	classContent += "class Derived : public Base" + publist + "\n{\npublic:\n\tDerived() : m_i(ctr) {}\n\tint m_i;\n};\n"
 	mainContent := "\nint main() {\n\tDerived d; std::cout << d.m_i << std::endl;\n}\n"
 
-	return writeTestFile(trace(), count, iostream + classContent + mainContent)
+	return writeTestFile(trace(), count, iostream+classContent+mainContent)
 }
 
 //
@@ -440,33 +436,33 @@ func parametersInMacroDefinition(count string) string {
 
 	content := "#define M("
 
-	for i:=0; i<requiredBaseCnt; i++ {
+	for i := 0; i < requiredBaseCnt; i++ {
 		content += "p" + strconv.Itoa(i)
-		if i < requiredBaseCnt - 1 {
+		if i < requiredBaseCnt-1 {
 			content += ", "
 		} else {
 			content += ") "
 		}
 	}
-	for i:=0; i<requiredBaseCnt; i++ {
+	for i := 0; i < requiredBaseCnt; i++ {
 		content += "p" + strconv.Itoa(i)
-		if i < requiredBaseCnt - 1 {
+		if i < requiredBaseCnt-1 {
 			content += "+"
 		}
 	}
 
 	content += "\nint main() {\n\t int v = M("
 
-	for i:=0; i<requiredBaseCnt; i++ {
+	for i := 0; i < requiredBaseCnt; i++ {
 		content += "1"
-		if i < requiredBaseCnt - 1 {
+		if i < requiredBaseCnt-1 {
 			content += ", "
 		} else {
 			content += ");\n\tstd::cout << v << std::endl;\n}\n"
 		}
 	}
 
-	return writeTestFile(trace(), count, iostream + content)
+	return writeTestFile(trace(), count, iostream+content)
 }
 
 //
@@ -475,13 +471,13 @@ func parametersInMacroDefinition(count string) string {
 func caseLabelsForSwitch(count string) string {
 	requiredLabelCnt, _ := strconv.Atoi(count)
 
-	content :=  "\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
-	for i:= 0; i<requiredLabelCnt; i++ {
-		content += "\t\tcase " + strconv.Itoa(i) + ": std::cout << " + strconv.Itoa(i * i) + " << std::endl; break;\n"
+	content := "\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
+	for i := 0; i < requiredLabelCnt; i++ {
+		content += "\t\tcase " + strconv.Itoa(i) + ": std::cout << " + strconv.Itoa(i*i) + " << std::endl; break;\n"
 	}
 	content += "}\n}\n"
 
-	return writeTestFile(trace(), count, iostream + content)
+	return writeTestFile(trace(), count, iostream+content)
 }
 
 //
@@ -490,15 +486,15 @@ func caseLabelsForSwitch(count string) string {
 func enumerationConstantsInEnum(count string) string {
 	requiredEnumCnt, _ := strconv.Atoi(count)
 
-	content :=  "\n#include<cstdlib>\n\n enum Stuff {"
-	for i:= 0; i< requiredEnumCnt; i++ {
-		content += "\t\tV" + strconv.Itoa(i) + " = " + strconv.Itoa(i) +",\n"
+	content := "\n#include<cstdlib>\n\n enum Stuff {"
+	for i := 0; i < requiredEnumCnt; i++ {
+		content += "\t\tV" + strconv.Itoa(i) + " = " + strconv.Itoa(i) + ",\n"
 	}
 
 	content += "};\nint main() {\nStuff v = V" + strconv.Itoa(rand.Intn(requiredEnumCnt))
 	content += ";\nstd::cout << v << std::endl;\n}\n"
 
-	return writeTestFile(trace(), count, iostream + content)
+	return writeTestFile(trace(), count, iostream+content)
 }
 
 //
@@ -517,37 +513,37 @@ func friendsOfAClass(count string) string {
 
 	// forward declare the classes and functions
 
-	for i:=0; i<friendClassCount; i++ {
+	for i := 0; i < friendClassCount; i++ {
 		content += "\nclass FriendClass" + strconv.Itoa(i) + ";"
 	}
-	for i:= 0; i<friendFunctionCount; i++ {
+	for i := 0; i < friendFunctionCount; i++ {
 		content += "\n int friendFunction" + strconv.Itoa(i) + "(const Friendly&);"
 	}
 
 	// the actual friendly class with lots of friends
 	content += "\n\nclass Friendly {\n\tint m_ctr = 1;\n"
-	for i:=0; i<friendClassCount; i++ {
+	for i := 0; i < friendClassCount; i++ {
 		content += "\tfriend class FriendClass" + strconv.Itoa(i) + ";\n"
 	}
-	for i:=0; i<friendFunctionCount; i++ {
-		content += "\tfriend int friendFunction"+ strconv.Itoa(i) + "(const Friendly&);\n"
+	for i := 0; i < friendFunctionCount; i++ {
+		content += "\tfriend int friendFunction" + strconv.Itoa(i) + "(const Friendly&);\n"
 	}
 
 	content += "};\n"
 	// generate the classes and the functions
-	for i:=0; i<friendClassCount; i++ {
+	for i := 0; i < friendClassCount; i++ {
 		content += "\nclass FriendClass" + strconv.Itoa(i) + " {\npublic:\n\tint m_ctr;\n\tFriendClass" + strconv.Itoa(i) + "(const Friendly& f) : m_ctr(f.m_ctr) {}\n};"
 	}
-	for i:=0; i<friendFunctionCount; i++ {
-		content += "\nint friendFunction"+ strconv.Itoa(i) + "(const Friendly& f) {\n\treturn f.m_ctr;\n}\n"
+	for i := 0; i < friendFunctionCount; i++ {
+		content += "\nint friendFunction" + strconv.Itoa(i) + "(const Friendly& f) {\n\treturn f.m_ctr;\n}\n"
 	}
 
 	content += "int main() { int v = 0;\n\tFriendly f;\n"
-	for i:=0; i< friendClassCount; i++ {
+	for i := 0; i < friendClassCount; i++ {
 		content += "\t{FriendClass" + strconv.Itoa(i) + " c(f);  v += c.m_ctr;}\n"
 	}
 
-	for i:= 0;i <friendFunctionCount; i++ {
+	for i := 0; i < friendFunctionCount; i++ {
 		content += "\tv += friendFunction" + strconv.Itoa(i) + "(f);\n"
 	}
 
@@ -570,7 +566,7 @@ func nestingOfStatements(count string) string {
 	currentFor := "f" + strconv.Itoa(forCounter)
 	previousFor := currentFor
 
-	for i:=0; i<requiredNestingDepth; i++ {
+	for i := 0; i < requiredNestingDepth; i++ {
 
 		// convention: generate 1 for, which contains one if. Should be enough
 		if operation == 0 {
@@ -580,19 +576,19 @@ func nestingOfStatements(count string) string {
 			} else {
 				content += previousFor
 			}
-			content +="; " + currentFor + "<" + count + "; " + currentFor+ "++ )\n"
+			content += "; " + currentFor + "<" + count + "; " + currentFor + "++ )\n"
 		}
 
 		if operation == 1 {
 			content += repeat(" ", i) + "if (" + currentFor + " % " + strconv.Itoa(modCounter) + " == 0)\n"
 		}
 
-		operation ++
+		operation++
 		if operation == 2 {
 			operation = 0
 			previousFor = currentFor
-			forCounter ++
-			modCounter ++
+			forCounter++
+			modCounter++
 			currentFor = "f" + strconv.Itoa(forCounter)
 		}
 	}
@@ -610,36 +606,36 @@ func nestingOfClasses(count string) string {
 	content := iostream
 
 	requiredNestingDepth, _ := strconv.Atoi(count)
-	for i:=0; i<requiredNestingDepth; i++ {
-		if i==0 {
+	for i := 0; i < requiredNestingDepth; i++ {
+		if i == 0 {
 			content += "class C0 {\n" + "public: int m_i0 = 0 ;\n"
 		} else {
-			content += repeat(" ", i) +"class C" + strconv.Itoa(i) + " {\n" + repeat(" ", i + 1) + "public: " +
-				"C" + strconv.Itoa(i) + "(const volatile C" + strconv.Itoa(i - 1) + " &c) : m_i" + strconv.Itoa(i) + "(" +
-				"c.m_i" + strconv.Itoa(i - 1) + " + 1) {}\n" + repeat(" ", i+1) + "int m_i" + strconv.Itoa(i) + ";\n"
+			content += repeat(" ", i) + "class C" + strconv.Itoa(i) + " {\n" + repeat(" ", i+1) + "public: " +
+				"C" + strconv.Itoa(i) + "(const volatile C" + strconv.Itoa(i-1) + " &c) : m_i" + strconv.Itoa(i) + "(" +
+				"c.m_i" + strconv.Itoa(i-1) + " + 1) {}\n" + repeat(" ", i+1) + "int m_i" + strconv.Itoa(i) + ";\n"
 		}
 	}
 
-	for i:=0; i<requiredNestingDepth; i++ {
-		content += repeat(" ", requiredNestingDepth - i - 1) + "};\n"
+	for i := 0; i < requiredNestingDepth; i++ {
+		content += repeat(" ", requiredNestingDepth-i-1) + "};\n"
 	}
 
 	content += "\nint main() {\n\tvolatile C0 v0;"
 
-	for i:= 1; i<requiredNestingDepth; i++ {
+	for i := 1; i < requiredNestingDepth; i++ {
 		content += "\n\tvolatile "
-		for j:=0 ;j <= i; j++ {
+		for j := 0; j <= i; j++ {
 			content += "C" + strconv.Itoa(j)
 			if j < i {
 				content += "::"
 			} else {
-				content += " v" + strconv.Itoa(i) + "(v" + strconv.Itoa(i - 1)+ ");"
+				content += " v" + strconv.Itoa(i) + "(v" + strconv.Itoa(i-1) + ");"
 			}
 
 		}
 	}
 
-	content += "\n\tstd::cout << v" + strconv.Itoa(requiredNestingDepth - 1) + ".m_i" + strconv.Itoa(requiredNestingDepth - 1) + " + 1 << std::endl;"
+	content += "\n\tstd::cout << v" + strconv.Itoa(requiredNestingDepth-1) + ".m_i" + strconv.Itoa(requiredNestingDepth-1) + " + 1 << std::endl;"
 
 	content += "\n}"
 
@@ -656,22 +652,46 @@ func accessControlDeclarationsInClass(count string) string {
 	var modifiers = []string{"public", "private", "protected"}
 	requiredCount, _ := strconv.Atoi(count)
 	m := make(map[string]int)
-	for _,i := range modifiers {
+	getters := make(map[int]string)
+	members := make(map[int]string)
+	for _, i := range modifiers {
 		m[i] = 0
 	}
-	for i:=0; i<requiredCount; i++ {
-		content +="\n" + modifiers[i % len(modifiers)] + ":\n\tint m_" + modifiers[i % len(modifiers)] + strconv.Itoa(m[modifiers[i % len(modifiers)]]) + " = 1;"
-		m[modifiers[i % len(modifiers)]] += 1
+	for i := 0; i < requiredCount-1; i++ {
+		modifier := modifiers[i%len(modifiers)]
+		memberName := modifier + strconv.Itoa(m[modifier])
+		content += "\n" + modifier + ":\n\tint m_" + memberName + " = 1;"
+		if modifier == "private" || modifier == "protected" {
+			getters[i] = memberName
+		} else {
+			members[i] = memberName
+		}
+
+		m[modifiers[i%len(modifiers)]]++
 	}
 
-	content += "\n};\n"
+	content += "\npublic:\n"
+	for i := 0; i < requiredCount-1; i++ {
+		if val, ok := getters[i]; ok {
+			content += "\t int get" + val + "() const { return m_" + val + ";}\n"
+		}
+	}
+
+	content += "\n};\nint main() {\n\tC c;\n\tint v = "
+	for i := 0; i < requiredCount-1; i++ {
+		if val, ok := getters[i]; ok {
+			content += "c.get" + val + "() + "
+		} else {
+			content += "c.m_" + members[i] + " + "
+		}
+	}
+	content += "0;\n\tstd::cout << v << std::endl;\n}"
 
 	fmt.Println(content)
 
 	return writeTestFile(trace(), count, content)
 
 }
-
 
 //
 // Main

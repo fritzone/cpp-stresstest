@@ -21,7 +21,7 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
       "count": [ "512" ],
       "minimum": "256",
@@ -119,7 +119,7 @@
     {
       "run": true,
       "testName" : "accessControlDeclarationsInClass",
-      "count" : ["1024", "4096"],
+      "count" : ["4096"],
       "minimum" : "4096",
       "description" : "(2.33) Access control declarations in a class ([class.access.spec]) [4 096]."
     }
