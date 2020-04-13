@@ -117,11 +117,20 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName" : "accessControlDeclarationsInClass",
       "count" : ["4096"],
       "minimum" : "4096",
       "description" : "(2.33) Access control declarations in a class ([class.access.spec]) [4 096]."
+    },
+   
+    {
+    "run": true,
+    "testName": "pointerAndArrayDeclaratorsModifyingSomething",
+    "count": ["16"],
+    "minimum": "256",
+    "description": "(2.3) Pointer ([dcl.ptr]), array ([dcl.array]), and function ([dcl.fct]) declarators (in any combination) modifying a class, arithmetic, or incomplete type in a declaration [256]"
     }
+
   ]
 }

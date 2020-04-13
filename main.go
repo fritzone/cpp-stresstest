@@ -72,6 +72,7 @@ var funcMap = map[string]interface{}{
 	"nestingOfStatements":                                      nestingOfStatements,
 	"nestingOfClasses":                                         nestingOfClasses,
 	"accessControlDeclarationsInClass":                         accessControlDeclarationsInClass,
+	"pointerAndArrayDeclaratorsModifyingSomething":             pointerAndArrayDeclaratorsModifyingSomething,
 }
 
 // some constants
@@ -687,10 +688,51 @@ func accessControlDeclarationsInClass(count string) string {
 	}
 	content += "0;\n\tstd::cout << v << std::endl;\n}"
 
+	return writeTestFile(trace(), count, content)
+
+}
+
+//
+// (2.33) Access control declarations in a class ([class.access.spec]) [4 096].
+//
+func pointerAndArrayDeclaratorsModifyingSomething(count string) string {
+	content := iostream + "int main()  {\n"
+	requiredCount, _ := strconv.Atoi(count)
+
+	savedRequiredCount := requiredCount
+
+	requiredCount /= 2
+
+	content += "\tvolatile int i = 0;\n\tvolatile int *volatile p1=&i;\n"
+
+	for i := 2; i <= requiredCount; i++ {
+		content += "\tvolatile int "
+		for j := 2; j <i + 1; j++ {
+			content += "*volatile "
+		}
+
+		content += "*p" + strconv.Itoa(i) + " = &p" + strconv.Itoa(i-1) + ";\n"
+
+	}
+
+	content += "\n\t*"
+
+	for i:=1; i<=requiredCount; i++ {
+		content += " &0[*"
+	}
+
+	content += " &0[&p" + strconv.Itoa(requiredCount) + "]"
+	for i:=1; i<=requiredCount; i++ {
+		content += " ]"
+	}
+
+	content += " = " + strconv.Itoa(savedRequiredCount) + ";\n\tstd::cout << i << std::endl;"
+
+	content += "\n}"
+
 	fmt.Println(content)
 
 	return writeTestFile(trace(), count, content)
-
 }
 
 //
