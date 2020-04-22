@@ -73,6 +73,8 @@ var funcMap = map[string]interface{}{
 	"nestingOfClasses":                                         nestingOfClasses,
 	"accessControlDeclarationsInClass":                         accessControlDeclarationsInClass,
 	"pointerAndArrayDeclaratorsModifyingSomething":             pointerAndArrayDeclaratorsModifyingSomething,
+	"nestingLevelOfConditionalInclusion":						nestingLevelOfConditionalInclusion,
+	"structureBindingsInOneDeclaration":						structureBindingsInOneDeclaration,
 }
 
 // some constants
@@ -730,7 +732,76 @@ func pointerAndArrayDeclaratorsModifyingSomething(count string) string {
 
 	content += "\n}"
 
-	fmt.Println(content)
+	return writeTestFile(trace(), count, content)
+}
+//
+// (2.2) Nesting levels of conditional inclusion ([cpp.cond]) [256].
+//
+func nestingLevelOfConditionalInclusion(count string) string {
+	content := ""
+	requiredCount, _ := strconv.Atoi(count)
+
+	for i:=0; i<requiredCount; i++ {
+		content += "#define COND_" + strconv.Itoa(i) + " 1\n"
+	}
+
+	content += "\n"
+
+	for i:=0; i<requiredCount; i++ {
+		content += repeat(" ", i) + "#ifdef COND_" + strconv.Itoa(i) + "\n"
+	}
+
+	content += "\n" + repeat(" ", requiredCount) + iostream
+	for i:=0; i<requiredCount; i++ {
+		content += repeat(" ", requiredCount - i - 1) + "#endif\n"
+	}
+
+	content += "\nint main() {\n\tstd::cout << " + count +" << std::endl;\n}"
+
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.9) Structured bindings ([dcl.struct.bind]) introduced in one declaration [256].
+//
+func structureBindingsInOneDeclaration(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+
+	content += "\nint main() {\n\tint arr[] = {"
+
+	for i:=0; i<requiredCount; i++ {
+		content += "1"
+		if i < requiredCount - 1 {
+			content += ", "
+		} else {
+			content += "};\n"
+		}
+	}
+
+	content += "\tauto volatile ["
+	for i:=0; i<requiredCount; i++ {
+		content += "v" + strconv.Itoa(i)
+		if i < requiredCount - 1 {
+			content += ", "
+		} else {
+			content += "] = arr;\n"
+		}
+	}
+
+	content += "\tint i = "
+
+	for i:=0; i<requiredCount; i++ {
+		content += "v" + strconv.Itoa(i)
+		if i < requiredCount - 1 {
+			content += " + "
+		} else {
+			content += ";\n\tstd::cout << i << std::endl;\n"
+		}
+	}
+
+
+	content += "\n}\n"
 
 	return writeTestFile(trace(), count, content)
 }

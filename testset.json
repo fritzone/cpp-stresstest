@@ -5,7 +5,7 @@
   "generateMakefile": true,
   "generateCMakeListsTxt": true,
   "compilationTimes": 1,
-  "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra -std=c++11",
+  "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra -std=c++17",
   "timeFlags": "-f '%E,%M'",
   "timedCompilation": true,
   "resultFormat": "CSV",
@@ -125,12 +125,29 @@
     },
    
     {
-    "run": true,
+    "run": false,
     "testName": "pointerAndArrayDeclaratorsModifyingSomething",
     "count": ["16"],
     "minimum": "256",
     "description": "(2.3) Pointer ([dcl.ptr]), array ([dcl.array]), and function ([dcl.fct]) declarators (in any combination) modifying a class, arithmetic, or incomplete type in a declaration [256]"
+    },
+
+    {
+      "run": false,
+      "testName": "nestingLevelOfConditionalInclusion",
+      "count": ["2048"],
+      "minimum": "256",
+      "description": "(2.2) Nesting levels of conditional inclusion ([cpp.cond]) [256]."
+    },
+
+    {
+      "run": true,
+      "testName": "structureBindingsInOneDeclaration",
+      "count": ["4096"],
+      "minimum": "256",
+      "description": "(2.9) Structured bindings ([dcl.struct.bind]) introduced in one declaration [256]."
     }
+
 
   ]
 }
