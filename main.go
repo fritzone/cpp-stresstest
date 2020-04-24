@@ -75,6 +75,7 @@ var funcMap = map[string]interface{}{
 	"pointerAndArrayDeclaratorsModifyingSomething":             pointerAndArrayDeclaratorsModifyingSomething,
 	"nestingLevelOfConditionalInclusion":						nestingLevelOfConditionalInclusion,
 	"structureBindingsInOneDeclaration":						structureBindingsInOneDeclaration,
+	"initializerClauseInBracedInitList":						initializerClauseInBracedInitList,
 }
 
 // some constants
@@ -799,7 +800,29 @@ func structureBindingsInOneDeclaration(count string) string {
 			content += ";\n\tstd::cout << i << std::endl;\n"
 		}
 	}
+	content += "\n}\n"
 
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.35) Initializer-clauses in one braced-init-list [16 384].
+//
+func initializerClauseInBracedInitList(count string) string {
+
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+
+	content += "int main() {\n\tunsigned char c[] = {"
+
+	for i:=0; i<requiredCount; i++ {
+		content += strconv.Itoa(i % 256)
+		if i < requiredCount - 1 {
+			content += ", "
+		} else {
+			content += "};\tvolatile unsigned long s = 0;\n\tfor (volatile unsigned long i=0; i< sizeof(c); i++) {\n\t s += c[i] || !c[i];\n\t}\n\n\tstd::cout << s << std::endl;"
+		}
+	}
 
 	content += "\n}\n"
 

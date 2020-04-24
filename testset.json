@@ -141,13 +141,20 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "structureBindingsInOneDeclaration",
       "count": ["4096"],
       "minimum": "256",
       "description": "(2.9) Structured bindings ([dcl.struct.bind]) introduced in one declaration [256]."
-    }
+    },
 
+    {
+      "run": true,
+      "testName": "initializerClauseInBracedInitList",
+      "count": ["32768"],
+      "minimum": "16384",
+      "description": "(2.35) Initializer-clauses in one braced-init-list [16 384]."
+    }
 
   ]
 }
