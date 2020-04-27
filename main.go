@@ -76,6 +76,8 @@ var funcMap = map[string]interface{}{
 	"nestingLevelOfConditionalInclusion":						nestingLevelOfConditionalInclusion,
 	"structureBindingsInOneDeclaration":						structureBindingsInOneDeclaration,
 	"initializerClauseInBracedInitList":						initializerClauseInBracedInitList,
+	"sizeOfAnObject":											sizeOfAnObject,
+	"identifierOrMacroNameLength":								identifierOrMacroNameLength,
 }
 
 // some constants
@@ -830,8 +832,44 @@ func initializerClauseInBracedInitList(count string) string {
 }
 
 //
-// Main
+// (2.17) Size of an object ([intro.object]) [262 144].
 //
+func sizeOfAnObject(count string) string {
+	content := iostream
+	content += "#include <numeric>\n"
+
+	content += "class A {\npublic:\n\tA() {\n\tstd::iota(std::begin(c), std::end(c), 0);\n\t}\n\tvoid printer() " +
+		"{\n\tfor(auto i=0ULL; i<sizeof(c); i++) {\n\t\tif(c[i] * 256 == i && i > 0) {\n\t\t\tstd::cout << i ;\n\t\t}\n\t}" +
+		"\n\t\tvolatile auto x = sizeof(*this);\n\t\tstd::cout << x << std::endl;\n\t}\nprivate:\n\n\tunsigned char c[" +
+		count +
+		"];\n\n};\nint main() {\n\tA a;\n\ta.printer();\n}\n"
+
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.5) Number of characters in an internal identifier ([lex.name]) or macro name ([cpp.replace]) [1 024].
+//
+func identifierOrMacroNameLength(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+	content += "#define "
+	macroName := "M"
+	varName := "v"
+	for i:=1; i<requiredCount; i++ {
+		macroName += string(rune(65 + rand.Intn(26)))
+		varName += string(rune(97 + rand.Intn(26)))
+	}
+	content += macroName + " " + count + "\n"
+
+	content += "int main() {\n\tvolatile int " + varName + " = " + macroName + ";\n\tstd::cout << " + varName + " << std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, content)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                   Main                                                             //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func main() {
 	dat, err := ioutil.ReadFile("/home/fld/work/p/cpp-stresstest/testset.json")
 	check(err)
