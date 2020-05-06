@@ -78,6 +78,8 @@ var funcMap = map[string]interface{}{
 	"initializerClauseInBracedInitList":						initializerClauseInBracedInitList,
 	"sizeOfAnObject":											sizeOfAnObject,
 	"identifierOrMacroNameLength":								identifierOrMacroNameLength,
+	"externIdentifierNameLength":								externIdentifierNameLength,
+	"externIdentifiersInOneTranslationUnit":					externIdentifiersInOneTranslationUnit,
 }
 
 // some constants
@@ -865,6 +867,45 @@ func identifierOrMacroNameLength(count string) string {
 	content += "int main() {\n\tvolatile int " + varName + " = " + macroName + ";\n\tstd::cout << " + varName + " << std::endl;\n}\n"
 
 	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.6) Number of characters in an external identifier ([lex.name], [basic.link]) [1 024].
+//
+func externIdentifierNameLength(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+	varName := "v"
+	for i:=1; i<requiredCount; i++ {
+		varName += string(rune(97 + rand.Intn(26)))
+	}
+
+	content += "int main() {\n\textern int " + varName +";\n\tstd::cout << " + varName + " << std::endl;\n}\n"
+	content += "int " + varName + " = " + count + ";\n"
+
+	return writeTestFile(trace(), count, content)
+}
+
+func externIdentifiersInOneTranslationUnit(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+	content += "int main() {"
+	addition := "0"
+	for i:=0; i<requiredCount; i++ {
+		varName := "v" + strconv.Itoa(i)
+		content += "\n\textern int " + varName + ";"
+		addition += " + " + varName
+	}
+
+	content += "\n\tstd::cout << " + addition + " << std::endl;\n}\n"
+
+	for i:=0; i<requiredCount; i++ {
+		varName := "v" + strconv.Itoa(i)
+
+		content += "int " + varName + " = 1;\n"
+	}
+	return writeTestFile(trace(), count, content)
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

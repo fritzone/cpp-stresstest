@@ -165,11 +165,28 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "identifierOrMacroNameLength",
       "count": ["2048"],
       "minimum": "1024",
       "description": "(2.5) tNumber of characters in an internal identifier ([lex.name]) or macro name ([cpp.replace]) [1 024]."
+    },
+
+    {
+      "run": false,
+      "testName": "externIdentifierNameLength",
+      "count": ["2048"],
+      "minimum": "1024",
+      "description": "(2.6) Number of characters in an external identifier ([lex.name], [basic.link]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName": "externIdentifiersInOneTranslationUnit",
+      "count": ["65536"],
+      "minimum": "65536",
+      "description": "(2.7) External identifiers ([basic.link]) in one translation unit [65 536]."
     }
+
   ]
 }
