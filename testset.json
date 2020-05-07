@@ -181,11 +181,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "externIdentifiersInOneTranslationUnit",
       "count": ["65536"],
       "minimum": "65536",
       "description": "(2.7) External identifiers ([basic.link]) in one translation unit [65 536]."
+    },
+
+    {
+      "run": true,
+      "testName": "charactersInOneLogicalSourceLine",
+      "count": ["65537"],
+      "minimum": "65536",
+      "description": "(2.15) Characters in one logical source line ([lex.phases]) [65 536]."
     }
 
   ]

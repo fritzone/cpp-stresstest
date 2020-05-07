@@ -80,6 +80,7 @@ var funcMap = map[string]interface{}{
 	"identifierOrMacroNameLength":								identifierOrMacroNameLength,
 	"externIdentifierNameLength":								externIdentifierNameLength,
 	"externIdentifiersInOneTranslationUnit":					externIdentifiersInOneTranslationUnit,
+	"charactersInOneLogicalSourceLine":							charactersInOneLogicalSourceLine,
 }
 
 // some constants
@@ -886,6 +887,9 @@ func externIdentifierNameLength(count string) string {
 	return writeTestFile(trace(), count, content)
 }
 
+//
+// (2.7) External identifiers ([basic.link]) in one translation unit [65 536]
+//
 func externIdentifiersInOneTranslationUnit(count string) string {
 	content := iostream
 	requiredCount, _ := strconv.Atoi(count)
@@ -905,7 +909,33 @@ func externIdentifiersInOneTranslationUnit(count string) string {
 		content += "int " + varName + " = 1;\n"
 	}
 	return writeTestFile(trace(), count, content)
+}
 
+//
+// (2.15) Characters in one logical source line ([lex.phases]) [65 536]
+//
+func charactersInOneLogicalSourceLine(count string) string {
+	content := iostream
+
+	requiredCount, _ := strconv.Atoi(count)
+	content += "int main() {\n"
+	content += "int a=" // 7 chars
+	if requiredCount % 2 == 1 {
+		content += "9"
+	} else {
+		content += "8"
+	}
+
+	requiredCount -= 8
+	for i:=0; i<requiredCount/2; i++ {
+		content += "+2"
+	}
+	if requiredCount % 2 == 1 {
+		content += " "
+	}
+
+	content += ";\n\tstd::cout << a << std::endl;\n}\n" // 8 chars
+	return writeTestFile(trace(), count, content)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
