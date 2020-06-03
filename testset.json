@@ -189,12 +189,46 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "charactersInOneLogicalSourceLine",
       "count": ["65537"],
       "minimum": "65536",
       "description": "(2.15) Characters in one logical source line ([lex.phases]) [65 536]."
+    },
+
+    {
+      "run": false,
+      "testName": "charactersInAStringLiteral",
+      "count": ["65537"],
+      "minimum": "65536",
+      "description": "(2.16) Characters in a string literal ([lex.string]) (after concatenation ([lex.phases])) [65 536]."
+    },
+
+    {
+      "run": false,
+      "testName": "nestingLevelsForIncludes",
+      "count": ["199"],
+      "minimum": "256",
+      "description": "(2.18) Nesting levels for #include files ([cpp.include]) [256]."
+    },
+
+    {
+      "run": false,
+      "testName": "lambdaCapturesInOneLambdaExpression",
+      "count": ["8192"],
+      "minimum": "256",
+      "description": "(2.21) Lambda-captures in one lambda-expression ([expr.prim.lambda.capture]) [256]."
+    },
+    {
+      "run": false,
+      "testName": "classMembersDeclaredInASingleMemberSpecification",
+      "count": ["4097"],
+      "minimum": "4096",
+      "description": "(2.28) Class members declared in a single member-specification (including member functions) ([class.mem]) [4 096]."
     }
+
+
+
 
   ]
 }

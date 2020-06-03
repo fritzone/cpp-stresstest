@@ -81,6 +81,10 @@ var funcMap = map[string]interface{}{
 	"externIdentifierNameLength":								externIdentifierNameLength,
 	"externIdentifiersInOneTranslationUnit":					externIdentifiersInOneTranslationUnit,
 	"charactersInOneLogicalSourceLine":							charactersInOneLogicalSourceLine,
+	"charactersInAStringLiteral":								charactersInAStringLiteral,
+	"nestingLevelsForIncludes":									nestingLevelsForIncludes,
+	"lambdaCapturesInOneLambdaExpression":						lambdaCapturesInOneLambdaExpression,
+	"classMembersDeclaredInASingleMemberSpecification":			classMembersDeclaredInASingleMemberSpecification,
 }
 
 // some constants
@@ -936,6 +940,120 @@ func charactersInOneLogicalSourceLine(count string) string {
 
 	content += ";\n\tstd::cout << a << std::endl;\n}\n" // 8 chars
 	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.16) Characters in a string literal ([lex.string]) (after concatenation ([lex.phases])) [65 536].
+//
+func charactersInAStringLiteral(count string) string {
+	content := iostream
+	content += "#include <cstring>\n"
+	requiredCount, _ := strconv.Atoi(count)
+	content += "int main() {\n"
+	content += "const char* a=\"\\\n"
+	cctr := 0
+	for i:=0; i<requiredCount; i++ {
+		cctr += 1
+		if cctr == 80 {
+			cctr = 0
+			content += "\\\n"
+		}
+		content += string(rune(97 + rand.Intn(26)))
+	}
+	content += "\";\n\tstd::cout << std::strlen(a) << std::endl;\n}\n"
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.18) Nesting levels for #include files ([cpp.include]) [256].
+//
+func writeHeaderFile(count int, content string) {
+	dir, _ := os.Getwd()
+	fileName := dir + "/" + testSet.SetName + "/inc/header" + strconv.Itoa(count) + ".h"
+	filePath, _ := filepath.Abs(fileName)
+	path := filepath.Dir(filePath)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.Mkdir(path, os.ModePerm)
+	}
+
+	f, err := os.Create(filePath)
+	check(err)
+	defer f.Close()
+
+	f.WriteString(content)
+}
+
+func nestingLevelsForIncludes(count string) string {
+	content := iostream
+	content += "#include \"inc/header1.h\"\n"
+    requiredCount, _ := strconv.Atoi(count)
+    for i:=1; i<requiredCount; i++ {
+		writeHeaderFile(i, "#include \"header" + strconv.Itoa(i + 1) + ".h\"\n")
+	}
+	writeHeaderFile(requiredCount, "const int v = " + strconv.Itoa(requiredCount) + ";\n")
+
+	content += "int main() {\n"
+	content += "\tstd::cout << v << std::endl;\n}\n"
+    return writeTestFile(trace(), count, content)
+
+}
+
+//
+// (2.21) Lambda-captures in one lambda-expression ([expr.prim.lambda.capture]) [256].
+//
+func lambdaCapturesInOneLambdaExpression(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+	content += "int main() {\n"
+
+	for i:=0; i< requiredCount; i++ {
+		content += "\t int v" + strconv.Itoa(i) + " = 1;\n"
+	}
+
+	content += "\t auto lambda_ref = ["
+	for i:=0; i< requiredCount; i++ {
+		content += "&v" + strconv.Itoa(i)
+		if i < requiredCount - 1 {
+			content += ", "
+		} else {
+			content += "]() -> int {\n"
+		}
+	}
+	content += "\t\treturn "
+	for i:=0; i< requiredCount; i++ {
+		content += "v" + strconv.Itoa(i)
+		if i < requiredCount - 1 {
+			content += " + "
+		} else {
+			content += ";\n\t};\n"
+		}
+	}
+	content += "\tint v_ref = lambda_ref();\n"
+	content += "\tstd::cout << v_ref << std::endl;\n}\n"
+	return writeTestFile(trace(), count, content)
+}
+
+func classMembersDeclaredInASingleMemberSpecification(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+
+	content += "class A {\npublic:\n\tint v1 = 1, "
+	for i:=2; i<=requiredCount; i++ {
+		if i % 10 == 0 {
+			content += "\n\t\t"
+		}
+		content += "v" + strconv.Itoa(i) + " = v" + strconv.Itoa(i-1) + " + 1"
+		if i<requiredCount {
+			content += ", "
+		} else {
+			content += ";\n};"
+		}
+	}
+
+	content += "\n\nint main() {\n\tA a;\n\tstd::cout << a.v" + count + " << std::endl;\n}"
+
+	return writeTestFile(trace(), count, content)
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
