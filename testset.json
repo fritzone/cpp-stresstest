@@ -219,15 +219,30 @@
       "minimum": "256",
       "description": "(2.21) Lambda-captures in one lambda-expression ([expr.prim.lambda.capture]) [256]."
     },
+
     {
       "run": false,
       "testName": "classMembersDeclaredInASingleMemberSpecification",
       "count": ["4097"],
       "minimum": "4096",
       "description": "(2.28) Class members declared in a single member-specification (including member functions) ([class.mem]) [4 096]."
+    },
+
+    {
+      "run": true,
+      "testName": "functionsRegisteredByatexit",
+      "count": ["64"],
+      "minimum": "32",
+      "description": "(2.24) Functions registered by atexit() ([support.start.term]) [32]."
+    },
+
+    {
+      "run": true,
+      "testName": "functionsRegisteredByat_quick_exit",
+      "count": ["5"],
+      "minimum": "32",
+      "description": "(2.25) Functions registered by at_quick_exit() ([support.start.term]) [32]."
     }
-
-
 
 
   ]

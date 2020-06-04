@@ -85,6 +85,8 @@ var funcMap = map[string]interface{}{
 	"nestingLevelsForIncludes":									nestingLevelsForIncludes,
 	"lambdaCapturesInOneLambdaExpression":						lambdaCapturesInOneLambdaExpression,
 	"classMembersDeclaredInASingleMemberSpecification":			classMembersDeclaredInASingleMemberSpecification,
+	"functionsRegisteredByatexit":								functionsRegisteredByatexit,
+	"functionsRegisteredByat_quick_exit":						functionsRegisteredByat_quick_exit,
 }
 
 // some constants
@@ -147,6 +149,31 @@ func repeat(what string, times int) string {
 		result += what
 	}
 	return result
+}
+
+func atexitHelper(count, funcname string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+	for i:=1; i<=requiredCount; i++ {
+		content += "\nvoid handler" + strconv.Itoa(i) + "() {\n\tstd::cout << \".\"  "
+		if  funcname == "at_quick_exit" {
+			content += "<< std::endl"
+		}
+		content += ";\n}"
+	}
+
+	content += "\nint main() {"
+	for i:=1; i<=requiredCount; i++ {
+		ci := strconv.Itoa(i)
+		content += "\n\tconst int r" + ci + " = std::" + funcname + "(handler" + ci + ");"
+		content += "\n\tif(r" + ci + " != 0) {"
+		content += "\n\t\tstd::cout << " + strconv.Itoa(i - 1) + " << std::endl;"
+		content += "\n\t\treturn EXIT_FAILURE;"
+		content += "\n\t}"
+	}
+
+	content += "\n\tstd::cout << " + count + " <<std::endl;\n\t"
+	return content
 }
 
 //
@@ -995,7 +1022,24 @@ func nestingLevelsForIncludes(count string) string {
 	content += "int main() {\n"
 	content += "\tstd::cout << v << std::endl;\n}\n"
     return writeTestFile(trace(), count, content)
+}
 
+//
+// (2.24) Functions registered by atexit() ([support.start.term]) [32].
+//
+func functionsRegisteredByatexit(count string) string {
+	content := atexitHelper(count, "atexit")
+	content += "return EXIT_SUCCESS;\n}"
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.25) Functions registered by at_quick_exit() ([support.start.term]) [32].
+//
+func functionsRegisteredByat_quick_exit(count string) string {
+	content := atexitHelper(count, "at_quick_exit")
+	content += "std::quick_exit(EXIT_SUCCESS);\n}"
+	return writeTestFile(trace(), count, content)
 }
 
 //
