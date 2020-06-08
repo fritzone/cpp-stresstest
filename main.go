@@ -87,6 +87,8 @@ var funcMap = map[string]interface{}{
 	"classMembersDeclaredInASingleMemberSpecification":			classMembersDeclaredInASingleMemberSpecification,
 	"functionsRegisteredByatexit":								functionsRegisteredByatexit,
 	"functionsRegisteredByat_quick_exit":						functionsRegisteredByat_quick_exit,
+	"recursivelyNestedTemplateInstantiations":					recursivelyNestedTemplateInstantiations,
+	"templateParametersInTemplateDeclaration":					templateParametersInTemplateDeclaration,
 }
 
 // some constants
@@ -1097,7 +1099,55 @@ func classMembersDeclaredInASingleMemberSpecification(count string) string {
 	content += "\n\nint main() {\n\tA a;\n\tstd::cout << a.v" + count + " << std::endl;\n}"
 
 	return writeTestFile(trace(), count, content)
+}
 
+//
+// (2.41) Recursively nested template instantiations ([temp.inst]), including substitution during template argument deduction ([temp.deduct]) [1 024].
+//
+func recursivelyNestedTemplateInstantiations(count string) string {
+	content := iostream
+	content += "template<typename T>\nstruct B {\n\ttypedef T BT;\n};\n" +
+		"template<int N>\nstruct C {\n\ttypedef typename B<typename C<N-1>::T>::BT T;\n};\n" +
+		"template<>\nstruct C<0> {\n\ttypedef int T;\n};\n\nint main()\n{\n\tC<"
+	content += count + ">::T c = " + count + ";\n\tstd::cout << c << std::endl;\n}\n"
+	fmt.Println(content)
+	return writeTestFile(trace(), count, content)
+}
+
+//
+//
+//
+func templateParametersInTemplateDeclaration(count string) string {
+	content := iostream
+	requiredCount, _ := strconv.Atoi(count)
+	content += "\ntemplate<"
+	for i:=0; i<requiredCount; i++ {
+		content += "int N" + strconv.Itoa(i)
+		if i<requiredCount - 1 {
+			content += ","
+		} else {
+			content += ">\nstruct C {\n\tstatic const int v = "
+		}
+	}
+	for i:=0; i<requiredCount; i++ {
+		content += "N" + strconv.Itoa(i)
+		if i< requiredCount - 1 {
+			content += " + "
+		} else {
+			content += ";\n};\nint main() {\n\tC<"
+		}
+	}
+
+	for i:=0; i<requiredCount; i++ {
+		content += "1"
+		if i< requiredCount - 1 {
+			content += ","
+		} else {
+			content += "> c;\n\tstd::cout << c.v << std::endl;\n}\n"
+		}
+	}
+
+	return writeTestFile(trace(), count, content)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

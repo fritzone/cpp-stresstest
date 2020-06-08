@@ -229,7 +229,7 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "functionsRegisteredByatexit",
       "count": ["64"],
       "minimum": "32",
@@ -237,13 +237,28 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "functionsRegisteredByat_quick_exit",
       "count": ["5"],
       "minimum": "32",
       "description": "(2.25) Functions registered by at_quick_exit() ([support.start.term]) [32]."
-    }
+    },
 
+    {
+      "run": false,
+      "testName": "recursivelyNestedTemplateInstantiations",
+      "count": ["10"],
+      "minimum": "1024",
+      "description": "(2.41) Recursively nested template instantiations ([temp.inst]), including substitution during template argument deduction ([temp.deduct]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName": "templateParametersInTemplateDeclaration",
+      "count": ["1024"],
+      "minimum": "1024",
+      "description": "(2.40) Template parameters in a template declaration ([temp.param]) [1 024]."
+    }
 
   ]
 }
