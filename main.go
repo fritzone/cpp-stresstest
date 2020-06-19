@@ -92,6 +92,7 @@ var funcMap = map[string]interface{}{
 	"memberInitializersInAConstructorDefinition":				memberInitializersInAConstructorDefinition,
 	"handlersPerTryBlock":										handlersPerTryBlock,
 	"recursiveConstexpr":										recursiveConstexpr,
+	"numberOfPlaceholders":										numberOfPlaceholders,
 }
 
 // some constants
@@ -1228,6 +1229,68 @@ func recursiveConstexpr(count string) string {
 		"\tstd::cout << k<<std::endl;\n}"
 
 	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.43) Number of placeholders [10].
+//
+func numberOfPlaceholders(count string) string {
+
+	requiredCount, _ := strconv.Atoi(count)
+
+	content := iostream
+	content += "#include <functional>\n" +
+		"struct Summer {\n\tint calculate("
+
+	for i:=1; i<=requiredCount; i++ {
+		content += "int p" + strconv.Itoa(i)
+		if i < requiredCount {
+			content += ", "
+		} else {
+			content += ") {\n\t\treturn "
+		}
+	}
+
+	for i:=1; i<=requiredCount; i++ {
+		content += "p" + strconv.Itoa(i);
+		if i<requiredCount {
+			content += " + "
+		} else {
+			content += ";\t\t}\n};\nint main() {\n\tusing SUM = std::function<int("
+		}
+	}
+
+	for i:=1; i<=requiredCount; i++ {
+		content += "int"
+		if i<requiredCount {
+			content += ","
+		} else {
+			content += ")>;\n\tSummer a;\n\tSUM f = std::bind(&Summer::calculate, &a,"
+		}
+	}
+
+	for i:=1; i<=requiredCount; i++ {
+		content += "std::placeholders::_" + strconv.Itoa(i)
+		if i<requiredCount {
+			content += ","
+		} else {
+			content += ");\n\tstd::cout << f("
+		}
+	}
+
+	for i:=1; i<=requiredCount; i++ {
+		content += "1"
+		if i < requiredCount {
+			content += ", "
+		} else {
+			content += ") << std::endl;\n}\n"
+		}
+	}
+
+	fmt.Println(content)
+
+	return writeTestFile(trace(), count, content)
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

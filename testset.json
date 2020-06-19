@@ -277,11 +277,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "recursiveConstexpr",
       "count": ["511"],
       "minimum": "512",
       "description": "(2.38) Recursive constexpr function invocations ([dcl.constexpr]) [512]."
+    },
+
+    {
+      "run": true,
+      "testName": "numberOfPlaceholders",
+      "count": ["20"],
+      "minimum": "10",
+      "description": "(2.43) Number of placeholders [10]."
     }
 
   ]
