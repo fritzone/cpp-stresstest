@@ -91,6 +91,7 @@ var funcMap = map[string]interface{}{
 	"templateParametersInTemplateDeclaration":					templateParametersInTemplateDeclaration,
 	"memberInitializersInAConstructorDefinition":				memberInitializersInAConstructorDefinition,
 	"handlersPerTryBlock":										handlersPerTryBlock,
+	"recursiveConstexpr":										recursiveConstexpr,
 }
 
 // some constants
@@ -1212,10 +1213,22 @@ func handlersPerTryBlock(count string) string {
 		content += "std::cout << e.what() << std::endl;\n\t}"
 	}
 	content += "\n}"
-	fmt.Println(content)
 	return writeTestFile(trace(), count, content)
 }
 
+//
+// (2.38) Recursive constexpr function invocations ([dcl.constexpr]) [512].
+//
+func recursiveConstexpr(count string) string {
+	content := "#include <iostream>\nconstexpr unsigned long long sum(unsigned long long n, unsigned long long s=0) {\n" +
+		"\treturn n ? sum(n-1,s+n) : s;\n}\n" +
+		"constexpr unsigned long long k = sum(" +
+		count +
+		");\n\nint main() {\n" +
+		"\tstd::cout << k<<std::endl;\n}"
+
+	return writeTestFile(trace(), count, content)
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                   Main                                                             //

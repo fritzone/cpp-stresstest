@@ -263,19 +263,26 @@
     {
       "run": false,
       "testName": "memberInitializersInAConstructorDefinition",
-      "count": ["10"],
+      "count": ["8192"],
       "minimum": "6144",
       "description": "(2.34) Member initializers in a constructor definition ([class.base.init]) [6 144]."
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "handlersPerTryBlock",
-      "count": ["10"],
+      "count": ["512"],
       "minimum": "256",
       "description": "(2.42) Handlers per try block ([except.handle]) [256]."
-    }
+    },
 
+    {
+      "run": true,
+      "testName": "recursiveConstexpr",
+      "count": ["511"],
+      "minimum": "512",
+      "description": "(2.38) Recursive constexpr function invocations ([dcl.constexpr]) [512]."
+    }
 
   ]
 }
