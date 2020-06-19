@@ -261,11 +261,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "memberInitializersInAConstructorDefinition",
       "count": ["10"],
       "minimum": "6144",
       "description": "(2.34) Member initializers in a constructor definition ([class.base.init]) [6 144]."
+    },
+
+    {
+      "run": true,
+      "testName": "handlersPerTryBlock",
+      "count": ["10"],
+      "minimum": "256",
+      "description": "(2.42) Handlers per try block ([except.handle]) [256]."
     }
 
 

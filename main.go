@@ -90,6 +90,7 @@ var funcMap = map[string]interface{}{
 	"recursivelyNestedTemplateInstantiations":					recursivelyNestedTemplateInstantiations,
 	"templateParametersInTemplateDeclaration":					templateParametersInTemplateDeclaration,
 	"memberInitializersInAConstructorDefinition":				memberInitializersInAConstructorDefinition,
+	"handlersPerTryBlock":										handlersPerTryBlock,
 }
 
 // some constants
@@ -1191,10 +1192,30 @@ func memberInitializersInAConstructorDefinition(count string) string {
 
 	content += "};\nint main() {\n\tC().print();\n}\n"
 
-	fmt.Println(content)
-
 	return writeTestFile(trace(), count, content)
 }
+
+//
+// (2.42) Handlers per try block ([except.handle]) [256].
+//
+func handlersPerTryBlock(count string) string {
+	content := iostream + "#include <exception>\n"
+	requiredCount, _ := strconv.Atoi(count)
+	for i:=1; i<=requiredCount; i++ {
+		content += "class myexception" + strconv.Itoa(i) + " : public std::exception {\n"
+		content += "public:\n\tconst char* what() const noexcept override {\n\t\t"
+		content += "return \"" + strconv.Itoa(i) + "\";\n\t}\n};\n\n"
+	}
+	content += "int main() {\n\ttry {\n\t\tthrow myexception" + strconv.Itoa(requiredCount) + "();\n\t}"
+	for i:=1; i<=requiredCount; i++ {
+		content += "\n\tcatch(const myexception" + strconv.Itoa(i) + "& e) {\n\t\t"
+		content += "std::cout << e.what() << std::endl;\n\t}"
+	}
+	content += "\n}"
+	fmt.Println(content)
+	return writeTestFile(trace(), count, content)
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                   Main                                                             //
