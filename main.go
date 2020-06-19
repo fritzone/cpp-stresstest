@@ -89,6 +89,7 @@ var funcMap = map[string]interface{}{
 	"functionsRegisteredByat_quick_exit":						functionsRegisteredByat_quick_exit,
 	"recursivelyNestedTemplateInstantiations":					recursivelyNestedTemplateInstantiations,
 	"templateParametersInTemplateDeclaration":					templateParametersInTemplateDeclaration,
+	"memberInitializersInAConstructorDefinition":				memberInitializersInAConstructorDefinition,
 }
 
 // some constants
@@ -1115,7 +1116,7 @@ func recursivelyNestedTemplateInstantiations(count string) string {
 }
 
 //
-//
+// (2.40) Template parameters in a template declaration ([temp.param]) [1 024].
 //
 func templateParametersInTemplateDeclaration(count string) string {
 	content := iostream
@@ -1146,6 +1147,51 @@ func templateParametersInTemplateDeclaration(count string) string {
 			content += "> c;\n\tstd::cout << c.v << std::endl;\n}\n"
 		}
 	}
+
+	return writeTestFile(trace(), count, content)
+}
+
+//
+// (2.34) Member initializers in a constructor definition ([class.base.init]) [6 144].
+//
+func memberInitializersInAConstructorDefinition(count string) string {
+	content := iostream
+
+	content += "class C {\npublic:\n\tC() : "
+
+	requiredCount, _ := strconv.Atoi(count)
+	for i:=1; i<= requiredCount; i++ {
+		content += "m_" + strconv.Itoa(i) + "(1)"
+		if i<requiredCount {
+			content += ", "
+			if i % 50 == 0 {
+				content += "\n\t\t"
+			}
+		} else {
+			content += " {}\n"
+		}
+	}
+
+	for i:= 1; i<=requiredCount; i++ {
+		content += "\n\tint m_" + strconv.Itoa(i) + ";"
+	}
+
+	content += "\n\n\tvoid print() const {\n\t\tstd::cout <<"
+	for i:=1; i<= requiredCount; i++ {
+		content += "m_" + strconv.Itoa(i)
+		if i<requiredCount {
+			content += " +  "
+			if i % 50 == 0 {
+				content += "\n\t\t"
+			}
+		} else {
+			content += " << std::endl;\n\t}\n"
+		}
+	}
+
+	content += "};\nint main() {\n\tC().print();\n}\n"
+
+	fmt.Println(content)
 
 	return writeTestFile(trace(), count, content)
 }

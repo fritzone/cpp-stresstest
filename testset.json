@@ -253,12 +253,21 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "templateParametersInTemplateDeclaration",
       "count": ["1024"],
       "minimum": "1024",
       "description": "(2.40) Template parameters in a template declaration ([temp.param]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName": "memberInitializersInAConstructorDefinition",
+      "count": ["10"],
+      "minimum": "6144",
+      "description": "(2.34) Member initializers in a constructor definition ([class.base.init]) [6 144]."
     }
+
 
   ]
 }
