@@ -285,11 +285,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "numberOfPlaceholders",
-      "count": ["20"],
+      "count": ["30"],
       "minimum": "10",
       "description": "(2.43) Number of placeholders [10]."
+    },
+
+    {
+      "run": true,
+      "testName": "finalOverridingVirtualFunctions",
+      "count": ["15"],
+      "minimum": "16384",
+      "description": "(2.29) Final overriding virtual functions in a class, accessible or not ([class.virtual]) [16 384]."
     }
 
   ]

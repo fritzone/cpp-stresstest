@@ -93,6 +93,7 @@ var funcMap = map[string]interface{}{
 	"handlersPerTryBlock":										handlersPerTryBlock,
 	"recursiveConstexpr":										recursiveConstexpr,
 	"numberOfPlaceholders":										numberOfPlaceholders,
+	"finalOverridingVirtualFunctions":							finalOverridingVirtualFunctions,
 }
 
 // some constants
@@ -413,13 +414,13 @@ func generateChildrensForNode(node *treeNode, currentLevel int, maxLevel int, to
 	return node.left, node.right
 }
 
-func generateClassHierarchy(node *treeNode, classContent *string) {
+func generateClassHierarchy(node *treeNode, classContent *string, caller string, generatedNames *[]string) {
 	if node.left != nil {
-		generateClassHierarchy(node.left, classContent)
+		generateClassHierarchy(node.left, classContent, caller, generatedNames)
 	}
 
 	if node.right != nil {
-		generateClassHierarchy(node.right, classContent)
+		generateClassHierarchy(node.right, classContent, caller, generatedNames)
 	}
 
 	*classContent += "class " + node.data
@@ -435,7 +436,15 @@ func generateClassHierarchy(node *treeNode, classContent *string) {
 		*classContent += ", public " + node.right.data
 	}
 
-	*classContent += "\n{\npublic: \n\t" + node.data + "() : m_i(ctr ++) { std::cout << m_i << std::endl; }\nprivate:\n\tint m_i;\n};\n\n"
+	if caller == "directAndIndirectBaseClassesOfClass" {
+		*classContent += "\n{\npublic: \n\t" + node.data + "() : m_i(ctr ++) { std::cout << m_i << std::endl; }\nprivate:\n\tint m_i;\n};\n\n"
+	} else if caller == "finalOverridingVirtualFunctions" {
+		runes := []rune(node.data)
+		cloc := string(runes[4:])
+		name := "func" + cloc
+		*generatedNames = append(*generatedNames, name)
+		*classContent += "\n{\npublic: \n\t" + node.data + "() = default;\n\n\tvirtual int func" + cloc + "() = 0;\n};\n\n"
+	}
 }
 
 func directAndIndirectBaseClassesOfClass(count string) string {
@@ -455,7 +464,7 @@ func directAndIndirectBaseClassesOfClass(count string) string {
 
 	classContent := "static int ctr = 0;\n"
 
-	generateClassHierarchy(root, &classContent)
+	generateClassHierarchy(root, &classContent, trace(), &[]string{})
 
 	publist := ""
 
@@ -1287,10 +1296,56 @@ func numberOfPlaceholders(count string) string {
 		}
 	}
 
-	fmt.Println(content)
-
 	return writeTestFile(trace(), count, content)
+}
 
+//
+// (2.29) Final overriding virtual functions in a class, accessible or not ([class.virtual]) [16 384].
+//
+func finalOverridingVirtualFunctions(count string) string {
+	requiredBaseCnt, _ := strconv.Atoi(count)
+	saveBaseCnt := requiredBaseCnt
+
+	maxLevel := 0
+	for requiredBaseCnt > 1 {
+		requiredBaseCnt /= 2
+		maxLevel += 1
+	}
+
+	root := &treeNode{nil, nil, "Base"}
+	totalCounter := 1
+	generateChildrensForNode(root, 1, maxLevel-1, &totalCounter, root.data)
+
+	classContent := iostream
+	generatedFunctions := make([]string, 0)
+	generateClassHierarchy(root, &classContent, trace(), &generatedFunctions)
+
+	publist := ""
+	// now generate a few classes to fill the gap between the totally generated classes (totalCounter) and the actual required classes
+	for i := 0; i < saveBaseCnt-totalCounter; i++ {
+		classContent += "class Base" + strconv.Itoa(i) + " {\npublic:\n\tBase" + strconv.Itoa(i) + "() = default;\n"
+		cloc := strconv.Itoa(i)
+		classContent += "\tvirtual int func" + cloc + "() = 0;\n};\n\n"
+		publist += ", public Base" + strconv.Itoa(i)
+		generatedFunctions = append(generatedFunctions, "func" + cloc)
+	}
+
+
+	classContent += "class Derived : public Base" + publist + "\n{\npublic:\n\tDerived()  = default;"
+	for i:=0; i< len(generatedFunctions); i++ {
+		classContent += "\n\tint " + generatedFunctions[i] + "() override final {\n\t\tvolatile int value = 1;\n\t\treturn value;\n\t}"
+	}
+
+	classContent += "\n};\n"
+	mainContent := "\nint main() {\n\tDerived d; std::cout << 0"
+
+	for i:=0; i< len(generatedFunctions); i++ {
+		mainContent += " + d." + generatedFunctions[i] + "()"
+	}
+
+	mainContent += " << std::endl;\n}\n"
+
+	return writeTestFile(trace(), count, classContent+mainContent)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
