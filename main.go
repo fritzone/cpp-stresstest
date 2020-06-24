@@ -94,6 +94,7 @@ var funcMap = map[string]interface{}{
 	"recursiveConstexpr":										recursiveConstexpr,
 	"numberOfPlaceholders":										numberOfPlaceholders,
 	"finalOverridingVirtualFunctions":							finalOverridingVirtualFunctions,
+	"directAndIndirectVirtualBaseClassesOfClass":				directAndIndirectVirtualBaseClassesOfClass,
 }
 
 // some constants
@@ -414,13 +415,13 @@ func generateChildrensForNode(node *treeNode, currentLevel int, maxLevel int, to
 	return node.left, node.right
 }
 
-func generateClassHierarchy(node *treeNode, classContent *string, caller string, generatedNames *[]string) {
+func generateClassHierarchy(node *treeNode, classContent *string, caller string, generatedNames *[]string, virtual bool) {
 	if node.left != nil {
-		generateClassHierarchy(node.left, classContent, caller, generatedNames)
+		generateClassHierarchy(node.left, classContent, caller, generatedNames, virtual)
 	}
 
 	if node.right != nil {
-		generateClassHierarchy(node.right, classContent, caller, generatedNames)
+		generateClassHierarchy(node.right, classContent, caller, generatedNames, virtual)
 	}
 
 	*classContent += "class " + node.data
@@ -430,13 +431,21 @@ func generateClassHierarchy(node *treeNode, classContent *string, caller string,
 	}
 
 	if node.left != nil {
-		*classContent += "public " + node.left.data
+		*classContent += "public "
+		if virtual {
+			*classContent += " virtual "
+		}
+		*classContent += node.left.data
 	}
 	if node.right != nil {
-		*classContent += ", public " + node.right.data
+		*classContent += ", public "
+		if virtual {
+			*classContent += "virtual "
+		}
+		*classContent += node.right.data
 	}
 
-	if caller == "directAndIndirectBaseClassesOfClass" {
+	if caller == "directAndIndirectBaseClassesOfClass"  || caller == "directAndIndirectVirtualBaseClassesOfClass" {
 		*classContent += "\n{\npublic: \n\t" + node.data + "() : m_i(ctr ++) { std::cout << m_i << std::endl; }\nprivate:\n\tint m_i;\n};\n\n"
 	} else if caller == "finalOverridingVirtualFunctions" {
 		runes := []rune(node.data)
@@ -447,7 +456,7 @@ func generateClassHierarchy(node *treeNode, classContent *string, caller string,
 	}
 }
 
-func directAndIndirectBaseClassesOfClass(count string) string {
+func generateClassHierarchyWitClasses(count string, virtual bool, testname string ) string {
 	requiredBaseCnt, _ := strconv.Atoi(count)
 	saveBaseCnt := requiredBaseCnt
 
@@ -464,23 +473,36 @@ func directAndIndirectBaseClassesOfClass(count string) string {
 
 	classContent := "static int ctr = 0;\n"
 
-	generateClassHierarchy(root, &classContent, trace(), &[]string{})
+	generateClassHierarchy(root, &classContent, testname, &[]string{}, virtual)
 
 	publist := ""
 
 	// now generate a few classes to fill the gap between the totally generated classes (totalCounter) and the actual required classes
 	for i := 0; i < saveBaseCnt-totalCounter; i++ {
-		classContent += "class Base" + strconv.Itoa(i) + " {\npublic:\n\tBase" + strconv.Itoa(i) + "() : m_i" + strconv.Itoa(i) + "(ctr ++) {" +
+		classContent += "class Base" + strconv.Itoa(i) + " {\npublic:\n\tBase" +
+			strconv.Itoa(i) + "() : m_i" + strconv.Itoa(i) + "(ctr ++) {" +
 			"\n\t\tstd::cout << m_i" + strconv.Itoa(i) + " << std::endl;\n\t}\n" +
 			"\tint m_i" + strconv.Itoa(i) + ";\n};\n\n"
 
-		publist += ", public Base" + strconv.Itoa(i)
+		publist += ", "
+		if virtual {
+			publist += "virtual "
+		}
+		publist += "public Base" + strconv.Itoa(i)
 	}
 
-	classContent += "class Derived : public Base" + publist + "\n{\npublic:\n\tDerived() : m_i(ctr) {}\n\tint m_i;\n};\n"
+	classContent += "class Derived : "
+	if virtual {
+		classContent += "virtual "
+	}
+	classContent += "public Base" + publist + "\n{\npublic:\n\tDerived() : m_i(ctr) {}\n\tint m_i;\n};\n"
 	mainContent := "\nint main() {\n\tDerived d; std::cout << d.m_i << std::endl;\n}\n"
 
-	return writeTestFile(trace(), count, iostream+classContent+mainContent)
+	return writeTestFile(testname, count, iostream+classContent+mainContent)
+}
+
+func directAndIndirectBaseClassesOfClass(count string) string {
+	return generateClassHierarchyWitClasses(count, false, trace())
 }
 
 //
@@ -1092,6 +1114,9 @@ func lambdaCapturesInOneLambdaExpression(count string) string {
 	return writeTestFile(trace(), count, content)
 }
 
+//
+// (2.28) Class members declared in a single member-specification (including member functions) ([class.mem]) [4 096].
+//
 func classMembersDeclaredInASingleMemberSpecification(count string) string {
 	content := iostream
 	requiredCount, _ := strconv.Atoi(count)
@@ -1318,7 +1343,7 @@ func finalOverridingVirtualFunctions(count string) string {
 
 	classContent := iostream
 	generatedFunctions := make([]string, 0)
-	generateClassHierarchy(root, &classContent, trace(), &generatedFunctions)
+	generateClassHierarchy(root, &classContent, trace(), &generatedFunctions, false)
 
 	publist := ""
 	// now generate a few classes to fill the gap between the totally generated classes (totalCounter) and the actual required classes
@@ -1346,6 +1371,13 @@ func finalOverridingVirtualFunctions(count string) string {
 	mainContent += " << std::endl;\n}\n"
 
 	return writeTestFile(trace(), count, classContent+mainContent)
+}
+
+//
+// (2.30) Direct and indirect virtual bases of a class ([class.mi]) [1 024].
+//
+func directAndIndirectVirtualBaseClassesOfClass(count string) string {
+	return generateClassHierarchyWitClasses(count, true, trace())
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

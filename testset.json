@@ -47,7 +47,7 @@
     {
       "run": false,
       "testName" : "directAndIndirectBaseClassesOfClass",
-      "count" : [ "16384", "32768", "65536" ],
+      "count" : [ "15" ],
       "minimum" : "16384",
       "description" : "(2.26) Direct and indirect base classes ([class.derived]) [16 384]"
     },
@@ -293,11 +293,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "finalOverridingVirtualFunctions",
       "count": ["15"],
       "minimum": "16384",
       "description": "(2.29) Final overriding virtual functions in a class, accessible or not ([class.virtual]) [16 384]."
+    },
+
+    {
+      "run": true,
+      "testName": "directAndIndirectVirtualBaseClassesOfClass",
+      "count": ["1024"],
+      "minimum": "1024",
+      "description": "(2.30) Direct and indirect virtual bases of a class ([class.mi]) [1 024]."
     }
 
   ]
