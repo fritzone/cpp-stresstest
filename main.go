@@ -97,6 +97,7 @@ var funcMap = map[string]interface{}{
 	"directAndIndirectVirtualBaseClassesOfClass":				directAndIndirectVirtualBaseClassesOfClass,
 	"fullExpressionInAConst":									fullExpressionInAConst,
 	"scopeQualificationOfOneIdentifier":						scopeQualificationOfOneIdentifier,
+	"nestedLinkageSpecifiers":									nestedLinkageSpecifiers,
 }
 
 // some constants
@@ -1391,12 +1392,18 @@ func fullExpressionInAConst(count string) string {
 	content += "\nconst int i = 0"
 	for i:=1; i<requiredExprCnt; i++ {
 		content += "+1"
+		if i % 40 == 0 {
+			content += "\n\t"
+		}
 	}
 	content += ";\nint main() {\n\tstd::cout << i << std::endl;\n}"
 
 	return writeTestFile(trace(), count, content)
 }
 
+//
+// (2.36) Scope qualifications of one identifier ([expr.prim.id.qual]) [256].
+//
 func scopeQualificationOfOneIdentifier(count string) string {
 	content := iostream
 	requiredCnt, _ := strconv.Atoi(count)
@@ -1418,6 +1425,40 @@ func scopeQualificationOfOneIdentifier(count string) string {
 
 	return writeTestFile(trace(), count, content)
 }
+
+func nestedLinkageSpecifiers(count string) string {
+	content := iostream
+
+	requiredCnt, _ := strconv.Atoi(count)
+	for i:=0; i<requiredCnt; i++ {
+		content += repeat(" ", i - 1) + "extern \""
+		if i % 2 == 0 {
+			content += "C"
+		} else {
+			content += "C++"
+		}
+		content += "\" { int f"
+		for j:=0; j<=i; j++ {
+			if j % 2 == 0 {
+				content += "C"
+			} else {
+				content += "x"
+			}
+		}
+		content += "() { return 1; }"
+		content += "\n"
+	}
+
+	content += repeat(" ", requiredCnt) + "int fun() { return " + count + ";}\n"
+	for i:=requiredCnt; i>=1 ; i-- {
+		content += repeat(" ", i - 1) + "}\n"
+	}
+
+	content += "\nint main() {\n\tstd::cout << fun() << std::endl;\n}"
+
+	return writeTestFile(trace(), count, content)
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                   Main                                                             //

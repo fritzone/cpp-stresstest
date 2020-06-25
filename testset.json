@@ -317,13 +317,19 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "scopeQualificationOfOneIdentifier",
       "count": ["512"],
       "minimum": "256",
       "description": "(2.36) Scope qualifications of one identifier ([expr.prim.id.qual]) [256]."
+    },
+    {
+      "run": true,
+      "testName": "nestedLinkageSpecifiers",
+      "count": ["16"],
+      "minimum": "1024",
+      "description": "(2.37) Nested linkage-specifications ([dcl.link]) [1 024]."
     }
-
 
   ]
 }
