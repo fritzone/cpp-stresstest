@@ -95,6 +95,8 @@ var funcMap = map[string]interface{}{
 	"numberOfPlaceholders":										numberOfPlaceholders,
 	"finalOverridingVirtualFunctions":							finalOverridingVirtualFunctions,
 	"directAndIndirectVirtualBaseClassesOfClass":				directAndIndirectVirtualBaseClassesOfClass,
+	"fullExpressionInAConst":									fullExpressionInAConst,
+	"scopeQualificationOfOneIdentifier":						scopeQualificationOfOneIdentifier,
 }
 
 // some constants
@@ -1378,6 +1380,43 @@ func finalOverridingVirtualFunctions(count string) string {
 //
 func directAndIndirectVirtualBaseClassesOfClass(count string) string {
 	return generateClassHierarchyWitClasses(count, true, trace())
+}
+
+//
+// (2.39) Full-expressions evaluated within a core constant expression ([expr.const]) [1 048 576].
+//
+func fullExpressionInAConst(count string) string {
+	content := iostream
+	requiredExprCnt, _ := strconv.Atoi(count)
+	content += "\nconst int i = 0"
+	for i:=1; i<requiredExprCnt; i++ {
+		content += "+1"
+	}
+	content += ";\nint main() {\n\tstd::cout << i << std::endl;\n}"
+
+	return writeTestFile(trace(), count, content)
+}
+
+func scopeQualificationOfOneIdentifier(count string) string {
+	content := iostream
+	requiredCnt, _ := strconv.Atoi(count)
+	for i:=1; i<=requiredCnt; i++ {
+		content += repeat(" ", i - 1) + "namespace ns" + strconv.Itoa(i) + " {\n"
+	}
+	content += repeat(" ", requiredCnt) + "int i =" + count + ";\n"
+	for i:=requiredCnt; i>=1 ; i-- {
+		content += repeat(" ", i - 1) + "}\n"
+	}
+
+	content += "\nint main() {\n\tstd::cout << "
+
+	for i:=1; i<=requiredCnt; i++ {
+		content += "ns" + strconv.Itoa(i) + "::"
+	}
+
+	content += "i << std::endl;\n}"
+
+	return writeTestFile(trace(), count, content)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

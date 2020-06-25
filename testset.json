@@ -301,12 +301,29 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "directAndIndirectVirtualBaseClassesOfClass",
       "count": ["1024"],
       "minimum": "1024",
       "description": "(2.30) Direct and indirect virtual bases of a class ([class.mi]) [1 024]."
+    },
+
+    {
+      "run": false,
+      "testName": "fullExpressionInAConst",
+      "count": ["16384"],
+      "minimum": "1048576",
+      "description": "(2.39) Full-expressions evaluated within a core constant expression ([expr.const]) [1 048 576]."
+    },
+
+    {
+      "run": true,
+      "testName": "scopeQualificationOfOneIdentifier",
+      "count": ["512"],
+      "minimum": "256",
+      "description": "(2.36) Scope qualifications of one identifier ([expr.prim.id.qual]) [256]."
     }
+
 
   ]
 }
