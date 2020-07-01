@@ -5,183 +5,64 @@
   "generateMakefile": true,
   "generateCMakeListsTxt": true,
   "compilationTimes": 1,
-  "compilerFlags": "-O2 -pedantic -ansi -Wall -Wextra -std=c++17",
+  "compilerFlags": "-pedantic -O2 -ansi -Wall -Wextra -std=c++17",
   "timeFlags": "-f '%E,%M'",
   "timedCompilation": true,
   "resultFormat": "CSV",
+  "compiler": "clang++",
 
   "tests": [
 
     {
-      "run": false,
-      "testName": "parameterCountInFunctionDefinition",
-      "count": [ "256", "1024", "2048", "4096", "8192", "16384" ],
-      "minimum": "256",
-      "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.12) Arguments in one function call ([expr.call]) [256]."
-    },
-
-    {
-      "run": false,
-      "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
-      "count": [ "512" ],
-      "minimum": "256",
-      "description": "(2.4) Nesting levels of parenthesized expressions ([expr.prim.paren]) within a full-expression [256]."
-    },
-
-    {
-      "run": false,
-      "testName" : "staticDataMemberOfClass",
-      "count" : [ "1024", "2048", "4096", "8192", "16384" ],
-      "minimum" : "1024",
-      "description" : "(2.31) Static data members of a class ([class.static.data]) [1 024]."
-    },
-
-    {
-      "run": false,
-      "testName" : "directBaseClassesOfClass",
-      "count" : ["1024", "2048", "4096", "8192", "16384"],
-      "minimum" : "1024",
-      "description" : "(2.27) Direct base classes for a single class ([class.derived]) [1 024]"
-    },
-
-    {
-      "run": false,
-      "testName" : "directAndIndirectBaseClassesOfClass",
-      "count" : [ "15" ],
-      "minimum" : "16384",
-      "description" : "(2.26) Direct and indirect base classes ([class.derived]) [16 384]"
-    },
-
-    {
-      "run": false,
-      "testName" : "macroCountInOneTranslationUnit",
-      "count" : ["2048", "4096", "8192", "16384", "32768", "65536", "131072"],
-      "minimum" : "65536",
-      "description" : "(2.10) Macro identifiers ([cpp.replace]) simultaneously defined in one translation unit [65 536]."
-    },
-
-    {
-      "run": false,
-      "testName" : "parametersInMacroDefinition",
-      "count" : ["256", "1024", "2048", "4096", "8192"],
-      "minimum" : "256",
-      "description" : "(2.13) Parameters in one macro definition ([cpp.replace]) [256] and (2.14) Arguments in one macro invocation ([cpp.replace]) [256]."
-    },
-
-    {
-      "run": false,
-      "testName" : "caseLabelsForSwitch",
-      "count" : ["16384"],
-      "minimum" : "16384",
-      "description" : "(2.19) Case labels for a switch statement ([stmt.switch]) (excluding those for any nested switch statements) [16 384]."
-    },
-
-    {
-      "run": false,
-      "testName" : "nonStaticDataMembersOfClass",
-      "count" : ["16384"],
-      "minimum" : "16384",
-      "description" : "(2.20) Non-static data members (including inherited ones) in a single class ([class.mem]) [16 384]"
-    },
-
-    {
-      "run": false,
-      "testName" : "enumerationConstantsInEnum",
-      "count" : ["4096", "8192"],
-      "minimum" : "4096",
-      "description" : "(2.22) Enumeration constants in a single enumeration ([dcl.enum]) [4 096]."
-    },
-
-    {
-      "run": false,
-      "testName" : "friendsOfAClass",
-      "count" : ["4096", "8192"],
-      "minimum" : "4096",
-      "description" : "(2.32) Friend declarations in a class ([class.friend]) [4 096]."
-    },
-
-    {
-      "run": false,
+      "run": true,
       "testName" : "nestingOfStatements",
-      "count" : ["256", "512"],
+      "count" : ["256"],
       "minimum" : "256",
       "description" : "(2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256]."
     },
 
     {
-      "run": false,
-      "testName" : "nestingOfClasses",
-      "count" : ["256", "512", "1024"],
-      "minimum" : "256",
-      "description" : "(2.23) Levels of nested class definitions ([class.nest]) in a single member-specification [256]."
-    },
-
-    {
-      "run": false,
-      "testName" : "accessControlDeclarationsInClass",
-      "count" : ["4096"],
-      "minimum" : "4096",
-      "description" : "(2.33) Access control declarations in a class ([class.access.spec]) [4 096]."
-    },
-   
-    {
-    "run": false,
-    "testName": "pointerAndArrayDeclaratorsModifyingSomething",
-    "count": ["16"],
-    "minimum": "256",
-    "description": "(2.3) Pointer ([dcl.ptr]), array ([dcl.array]), and function ([dcl.fct]) declarators (in any combination) modifying a class, arithmetic, or incomplete type in a declaration [256]"
-    },
-
-    {
-      "run": false,
+      "run": true,
       "testName": "nestingLevelOfConditionalInclusion",
-      "count": ["2048"],
+      "count": ["256"],
       "minimum": "256",
       "description": "(2.2) Nesting levels of conditional inclusion ([cpp.cond]) [256]."
     },
 
-    {
-      "run": false,
-      "testName": "structureBindingsInOneDeclaration",
-      "count": ["4096"],
+   {
+      "run": true,
+      "testName": "pointerAndArrayDeclaratorsModifyingSomething",
+      "count": ["256"],
       "minimum": "256",
-      "description": "(2.9) Structured bindings ([dcl.struct.bind]) introduced in one declaration [256]."
+      "description": "(2.3) Pointer ([dcl.ptr]), array ([dcl.array]), and function ([dcl.fct]) declarators (in any combination) modifying a class, arithmetic, or incomplete type in a declaration [256]"
     },
 
     {
-      "run": false,
-      "testName": "initializerClauseInBracedInitList",
-      "count": ["32768"],
-      "minimum": "16384",
-      "description": "(2.35) Initializer-clauses in one braced-init-list [16 384]."
+      "run": true,
+      "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
+      "count": [ "256" ],
+      "minimum": "256",
+      "description": "(2.4) Nesting levels of parenthesized expressions ([expr.prim.paren]) within a full-expression [256]."
     },
 
     {
-      "run": false,
-      "testName": "sizeOfAnObject",
-      "count": ["262144"],
-      "minimum": "262144",
-      "description": "(2.17) Size of an object ([intro.object]) [262 144]."
-    },
-
-    {
-      "run": false,
+      "run": true,
       "testName": "identifierOrMacroNameLength",
-      "count": ["2048"],
+      "count": ["1024"],
       "minimum": "1024",
       "description": "(2.5) tNumber of characters in an internal identifier ([lex.name]) or macro name ([cpp.replace]) [1 024]."
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "externIdentifierNameLength",
-      "count": ["2048"],
+      "count": ["1024"],
       "minimum": "1024",
       "description": "(2.6) Number of characters in an external identifier ([lex.name], [basic.link]) [1 024]."
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "externIdentifiersInOneTranslationUnit",
       "count": ["65536"],
       "minimum": "65536",
@@ -189,119 +70,159 @@
     },
 
     {
-      "run": false,
+      "run": true,
+      "testName": "structuredBindingsInOneDeclaration",
+      "count": ["256"],
+      "minimum": "256",
+      "description": "(2.9) Structured bindings ([dcl.struct.bind]) introduced in one declaration [256]."
+    },
+
+    {
+      "run": true,
+      "testName" : "macroCountInOneTranslationUnit",
+      "count" : ["65536"],
+      "minimum" : "65536",
+      "description" : "(2.10) Macro identifiers ([cpp.replace]) simultaneously defined in one translation unit [65 536]."
+    },
+
+    {
+      "run": true,
+      "testName": "parameterCountInFunctionDefinition",
+      "count": [ "256"],
+      "minimum": "256",
+      "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.12) Arguments in one function call ([expr.call]) [256]."
+    },
+
+    {
+      "run": true,
+      "testName" : "parametersInMacroDefinition",
+      "count" : ["256"],
+      "minimum" : "256",
+      "description" : "(2.13) Parameters in one macro definition ([cpp.replace]) [256] and (2.14) Arguments in one macro invocation ([cpp.replace]) [256]."
+    },
+
+    {
+      "run": true,
       "testName": "charactersInOneLogicalSourceLine",
-      "count": ["65537"],
+      "count": ["65536"],
       "minimum": "65536",
       "description": "(2.15) Characters in one logical source line ([lex.phases]) [65 536]."
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "charactersInAStringLiteral",
-      "count": ["65537"],
+      "count": ["65536"],
       "minimum": "65536",
       "description": "(2.16) Characters in a string literal ([lex.string]) (after concatenation ([lex.phases])) [65 536]."
     },
 
     {
-      "run": false,
+      "run": true,
+      "testName": "sizeOfAnObject",
+      "count": ["262144"],
+      "minimum": "262144",
+      "description": "(2.17) Size of an object ([intro.object]) [262 144]."
+    },
+
+    {
+      "run": true,
       "testName": "nestingLevelsForIncludes",
-      "count": ["199"],
+      "count": ["256"],
       "minimum": "256",
       "description": "(2.18) Nesting levels for #include files ([cpp.include]) [256]."
     },
 
     {
-      "run": false,
+      "run": true,
+      "testName" : "caseLabelsForSwitch",
+      "count" : ["16384"],
+      "minimum" : "16384",
+      "description" : "(2.19) Case labels for a switch statement ([stmt.switch]) (excluding those for any nested switch statements) [16 384]."
+    },
+
+    {
+      "run": true,
+      "testName" : "nonStaticDataMembersOfClass",
+      "count" : ["16384"],
+      "minimum" : "16384",
+      "description" : "(2.20) Non-static data members (including inherited ones) in a single class ([class.mem]) [16 384]"
+    },
+
+    {
+      "run": true,
       "testName": "lambdaCapturesInOneLambdaExpression",
-      "count": ["8192"],
+      "count": ["256"],
       "minimum": "256",
       "description": "(2.21) Lambda-captures in one lambda-expression ([expr.prim.lambda.capture]) [256]."
     },
 
     {
-      "run": false,
-      "testName": "classMembersDeclaredInASingleMemberSpecification",
-      "count": ["4097"],
-      "minimum": "4096",
-      "description": "(2.28) Class members declared in a single member-specification (including member functions) ([class.mem]) [4 096]."
+      "run": true,
+      "testName" : "enumerationConstantsInEnum",
+      "count" : ["4096"],
+      "minimum" : "4096",
+      "description" : "(2.22) Enumeration constants in a single enumeration ([dcl.enum]) [4 096]."
     },
 
     {
-      "run": false,
+      "run": true,
+      "testName" : "nestingOfClasses",
+      "count" : ["256"],
+      "minimum" : "256",
+      "description" : "(2.23) Levels of nested class definitions ([class.nest]) in a single member-specification [256]."
+    },
+
+    {
+      "run": true,
       "testName": "functionsRegisteredByatexit",
-      "count": ["64"],
+      "count": ["32"],
       "minimum": "32",
       "description": "(2.24) Functions registered by atexit() ([support.start.term]) [32]."
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "functionsRegisteredByat_quick_exit",
-      "count": ["5"],
+      "count": ["32"],
       "minimum": "32",
       "description": "(2.25) Functions registered by at_quick_exit() ([support.start.term]) [32]."
     },
 
     {
-      "run": false,
-      "testName": "recursivelyNestedTemplateInstantiations",
-      "count": ["10"],
-      "minimum": "1024",
-      "description": "(2.41) Recursively nested template instantiations ([temp.inst]), including substitution during template argument deduction ([temp.deduct]) [1 024]."
+      "run": true,
+      "testName" : "directAndIndirectBaseClassesOfClass",
+      "count" : [ "16384" ],
+      "minimum" : "16384",
+      "description" : "(2.26) Direct and indirect base classes ([class.derived]) [16 384]"
     },
 
     {
-      "run": false,
-      "testName": "templateParametersInTemplateDeclaration",
-      "count": ["1024"],
-      "minimum": "1024",
-      "description": "(2.40) Template parameters in a template declaration ([temp.param]) [1 024]."
+      "run": true,
+      "testName" : "directBaseClassesOfClass",
+      "count" : ["1024"],
+      "minimum" : "1024",
+      "description" : "(2.27) Direct base classes for a single class ([class.derived]) [1 024]"
     },
 
     {
-      "run": false,
-      "testName": "memberInitializersInAConstructorDefinition",
-      "count": ["8192"],
-      "minimum": "6144",
-      "description": "(2.34) Member initializers in a constructor definition ([class.base.init]) [6 144]."
+      "run": true,
+      "testName": "classMembersDeclaredInASingleMemberSpecification",
+      "count": ["4096"],
+      "minimum": "4096",
+      "description": "(2.28) Class members declared in a single member-specification (including member functions) ([class.mem]) [4 096]."
     },
 
     {
-      "run": false,
-      "testName": "handlersPerTryBlock",
-      "count": ["512"],
-      "minimum": "256",
-      "description": "(2.42) Handlers per try block ([except.handle]) [256]."
-    },
-
-    {
-      "run": false,
-      "testName": "recursiveConstexpr",
-      "count": ["511"],
-      "minimum": "512",
-      "description": "(2.38) Recursive constexpr function invocations ([dcl.constexpr]) [512]."
-    },
-
-    {
-      "run": false,
-      "testName": "numberOfPlaceholders",
-      "count": ["30"],
-      "minimum": "10",
-      "description": "(2.43) Number of placeholders [10]."
-    },
-
-    {
-      "run": false,
+      "run": true,
       "testName": "finalOverridingVirtualFunctions",
-      "count": ["15"],
+      "count": ["16384"],
       "minimum": "16384",
       "description": "(2.29) Final overriding virtual functions in a class, accessible or not ([class.virtual]) [16 384]."
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "directAndIndirectVirtualBaseClassesOfClass",
       "count": ["1024"],
       "minimum": "1024",
@@ -309,26 +230,107 @@
     },
 
     {
-      "run": false,
-      "testName": "fullExpressionInAConst",
+      "run": true,
+      "testName" : "staticDataMemberOfClass",
+      "count" : [ "1024"],
+      "minimum" : "1024",
+      "description" : "(2.31) Static data members of a class ([class.static.data]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName" : "friendsOfAClass",
+      "count" : ["4096"],
+      "minimum" : "4096",
+      "description" : "(2.32) Friend declarations in a class ([class.friend]) [4 096]."
+    },
+
+    {
+      "run": true,
+      "testName" : "accessControlDeclarationsInClass",
+      "count" : ["4096"],
+      "minimum" : "4096",
+      "description" : "(2.33) Access control declarations in a class ([class.access.spec]) [4 096]."
+    },
+
+    {
+      "run": true,
+      "testName": "memberInitializersInAConstructorDefinition",
+      "count": ["6144"],
+      "minimum": "6144",
+      "description": "(2.34) Member initializers in a constructor definition ([class.base.init]) [6 144]."
+    },
+
+    {
+      "run": true,
+      "testName": "initializerClauseInBracedInitList",
       "count": ["16384"],
+      "minimum": "16384",
+      "description": "(2.35) Initializer-clauses in one braced-init-list [16 384]."
+    },
+
+    {
+      "run": true,
+      "testName": "scopeQualificationOfOneIdentifier",
+      "count": ["256"],
+      "minimum": "256",
+      "description": "(2.36) Scope qualifications of one identifier ([expr.prim.id.qual]) [256]."
+    },
+
+    {
+      "run": true,
+      "testName": "nestedLinkageSpecifiers",
+      "count": ["1024"],
+      "minimum": "1024",
+      "description": "(2.37) Nested linkage-specifications ([dcl.link]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName": "recursiveConstexpr",
+      "count": ["512"],
+      "minimum": "512",
+      "description": "(2.38) Recursive constexpr function invocations ([dcl.constexpr]) [512]."
+    },
+
+    {
+      "run": true,
+      "testName": "fullExpressionInAConst",
+      "count": ["1048576"],
       "minimum": "1048576",
       "description": "(2.39) Full-expressions evaluated within a core constant expression ([expr.const]) [1 048 576]."
     },
 
     {
-      "run": false,
-      "testName": "scopeQualificationOfOneIdentifier",
-      "count": ["512"],
-      "minimum": "256",
-      "description": "(2.36) Scope qualifications of one identifier ([expr.prim.id.qual]) [256]."
+      "run": true,
+      "testName": "templateParametersInTemplateDeclaration",
+      "count": ["1024"],
+      "minimum": "1024",
+      "description": "(2.40) Template parameters in a template declaration ([temp.param]) [1 024]."
     },
+
     {
       "run": true,
-      "testName": "nestedLinkageSpecifiers",
-      "count": ["16"],
+      "testName": "recursivelyNestedTemplateInstantiations",
+      "count": ["1024"],
       "minimum": "1024",
-      "description": "(2.37) Nested linkage-specifications ([dcl.link]) [1 024]."
+      "description": "(2.41) Recursively nested template instantiations ([temp.inst]), including substitution during template argument deduction ([temp.deduct]) [1 024]."
+    },
+
+    {
+      "run": true,
+      "testName": "handlersPerTryBlock",
+      "count": ["256"],
+      "minimum": "256",
+      "description": "(2.42) Handlers per try block ([except.handle]) [256]."
+    },
+
+    {
+      "run": true,
+      "testName": "numberOfPlaceholders",
+      "count": ["10"],
+      "minimum": "10",
+      "description": "(2.43) Number of placeholders [10]."
     }
 
   ]
