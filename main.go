@@ -118,7 +118,7 @@ func nestingLevelOfConditionalInclusion(count string) string {
 	content += "\n"
 
 	for i:=0; i<requiredCount; i++ {
-		content += repeat(" ", i) + "#ifdef COND_" + strconv.Itoa(i) + "\n"
+		content += repeat(" ", i) + "#if defined COND_" + strconv.Itoa(i) + "\n"
 	}
 
 	content += "\n" + repeat(" ", requiredCount) + iostream
@@ -135,7 +135,7 @@ func nestingLevelOfConditionalInclusion(count string) string {
 // (2.3) Pointer ([dcl.ptr]), array ([dcl.array]), and function ([dcl.fct]) declarators (in any combination) modifying a class, arithmetic, or incomplete type in a declaration [256]
 //
 func pointerAndArrayDeclaratorsModifyingSomething(count string) string {
-	content := iostream + "int main()  {\n"
+	content := iostream + "constexpr int z() {\n\t return 0;\n}\nint main() {\n"
 	requiredCount, _ := strconv.Atoi(count)
 
 	savedRequiredCount := requiredCount
@@ -157,10 +157,10 @@ func pointerAndArrayDeclaratorsModifyingSomething(count string) string {
 	content += "\n\t*"
 
 	for i:=1; i<=requiredCount; i++ {
-		content += " &0[*"
+		content += " & z()[*"
 	}
 
-	content += " &0[&p" + strconv.Itoa(requiredCount) + "]"
+	content += " & z()[&p" + strconv.Itoa(requiredCount) + "]"
 	for i:=1; i<=requiredCount; i++ {
 		content += " ]"
 	}
@@ -207,13 +207,16 @@ func identifierOrMacroNameLength(count string) string {
 	content += "#define "
 	macroName := "M"
 	varName := "v"
+	funName := "f"
 	for i:=1; i<requiredCount; i++ {
 		macroName += string(rune(65 + rand.Intn(26)))
 		varName += string(rune(97 + rand.Intn(26)))
+		funName += string(rune(97 + rand.Intn(26)))
 	}
 	content += macroName + " " + count + "\n"
 
-	content += "int main() {\n\tvolatile int " + varName + " = " + macroName + ";\n\tstd::cout << " + varName + " << std::endl;\n}\n"
+	content += "void " + funName + "() {\n\tvolatile int " + varName + " = " + macroName + ";\n\tstd::cout << " +
+		varName + " << std::endl;\n}\nint main() {\n\t"+ funName + "();\n}\n"
 
 	return writeTestFile(trace(), count, content)
 }
@@ -972,7 +975,7 @@ func initializerClauseInBracedInitList(count string) string {
 		if i < requiredCount - 1 {
 			content += ", "
 		} else {
-			content += "};\tvolatile unsigned long s = 0;\n\tfor (volatile unsigned long i=0; i< sizeof(c); i++) {\n\t s += c[i] || !c[i];\n\t}\n\n\tstd::cout << s << std::endl;"
+			content += "};\n\tvolatile unsigned long s = 0;\n\tfor (volatile unsigned long i=0; i< sizeof(c); i++) {\n\ts += c[i] || !c[i];\n\t}\n\n\tstd::cout << s << std::endl;"
 		}
 	}
 
@@ -1013,6 +1016,8 @@ func nestedLinkageSpecifiers(count string) string {
 	content := iostream
 
 	requiredCnt, _ := strconv.Atoi(count)
+	funNames := make([]string, 0)
+
 	for i:=0; i<requiredCnt; i++ {
 		content += repeat(" ", i - 1) + "extern \""
 		if i % 2 == 0 {
@@ -1020,19 +1025,28 @@ func nestedLinkageSpecifiers(count string) string {
 		} else {
 			content += "C++"
 		}
+		funName := "f"
 		content += "\" { int f"
 		for j:=0; j<=i; j++ {
 			if j % 2 == 0 {
 				content += "C"
+				funName += "C"
 			} else {
 				content += "x"
+				funName += "x"
 			}
 		}
+		funNames = append(funNames, funName)
 		content += "() { return 1; }"
 		content += "\n"
 	}
 
-	content += repeat(" ", requiredCnt) + "int fun() { return " + count + ";}\n"
+	funCalls := "0"
+	for i:=0; i<len(funNames); i++ {
+		funCalls += "+" + funNames[i] + "()"
+	}
+
+	content += repeat(" ", requiredCnt) + "int fun() { return " + funCalls + ";}\n"
 	for i:=requiredCnt; i>=1 ; i-- {
 		content += repeat(" ", i - 1) + "}\n"
 	}
