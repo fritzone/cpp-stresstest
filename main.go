@@ -7,51 +7,52 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 )
 
 // the map which maps the name of a test case from the json file to a go function
 var funcMap = map[string]interface{}{
-	"nestingOfStatements": nestingOfStatements,
-	"nestingLevelOfConditionalInclusion": nestingLevelOfConditionalInclusion,
-	"pointerAndArrayDeclaratorsModifyingSomething": pointerAndArrayDeclaratorsModifyingSomething,
+	"nestingOfStatements":                                      nestingOfStatements,
+	"nestingLevelOfConditionalInclusion":                       nestingLevelOfConditionalInclusion,
+	"pointerAndArrayDeclaratorsModifyingSomething":             pointerAndArrayDeclaratorsModifyingSomething,
 	"nestingLevelsOfParenthesizedExpressionsInAFullExpression": nestingLevelsOfParenthesizedExpressionsInAFullExpression,
-	"identifierOrMacroNameLength": identifierOrMacroNameLength,
-	"externIdentifierNameLength": externIdentifierNameLength,
-	"externIdentifiersInOneTranslationUnit": externIdentifiersInOneTranslationUnit,
-	"parameterCountInFunctionDefinition": parameterCountInFunctionDefinition,
-	"structuredBindingsInOneDeclaration": structuredBindingsInOneDeclaration,
-	"macroCountInOneTranslationUnit": macroCountInOneTranslationUnit,
-	"parametersInMacroDefinition": parametersInMacroDefinition,
-	"charactersInOneLogicalSourceLine": charactersInOneLogicalSourceLine,
-	"charactersInAStringLiteral": charactersInAStringLiteral,
-	"sizeOfAnObject": sizeOfAnObject,
-	"nestingLevelsForIncludes": nestingLevelsForIncludes,
-	"caseLabelsForSwitch": caseLabelsForSwitch,
-	"nonStaticDataMembersOfClass": nonStaticDataMembersOfClass,
-	"lambdaCapturesInOneLambdaExpression": lambdaCapturesInOneLambdaExpression,
-	"enumerationConstantsInEnum": enumerationConstantsInEnum,
-	"nestingOfClasses": nestingOfClasses,
-	"functionsRegisteredByatexit": functionsRegisteredByatexit,
-	"functionsRegisteredByat_quick_exit": functionsRegisteredByat_quick_exit,
-	"directAndIndirectBaseClassesOfClass": directAndIndirectBaseClassesOfClass,
-	"directBaseClassesOfClass": directBaseClassesOfClass,
-	"classMembersDeclaredInASingleMemberSpecification": classMembersDeclaredInASingleMemberSpecification,
-	"finalOverridingVirtualFunctions": finalOverridingVirtualFunctions,
-	"directAndIndirectVirtualBaseClassesOfClass": directAndIndirectVirtualBaseClassesOfClass,
-	"staticDataMemberOfClass": staticDataMemberOfClass,
-	"friendsOfAClass": friendsOfAClass,
-	"accessControlDeclarationsInClass": accessControlDeclarationsInClass,
-	"memberInitializersInAConstructorDefinition": memberInitializersInAConstructorDefinition,
-	"initializerClauseInBracedInitList": initializerClauseInBracedInitList,
-	"scopeQualificationOfOneIdentifier": scopeQualificationOfOneIdentifier,
-	"nestedLinkageSpecifiers": nestedLinkageSpecifiers,
-	"recursiveConstexpr": recursiveConstexpr,
-	"fullExpressionInAConst": fullExpressionInAConst,
-	"templateParametersInTemplateDeclaration": templateParametersInTemplateDeclaration,
-	"recursivelyNestedTemplateInstantiations": recursivelyNestedTemplateInstantiations,
-	"handlersPerTryBlock": handlersPerTryBlock,
-	"numberOfPlaceholders": numberOfPlaceholders,
+	"identifierOrMacroNameLength":                              identifierOrMacroNameLength,
+	"externIdentifierNameLength":                               externIdentifierNameLength,
+	"externIdentifiersInOneTranslationUnit":                    externIdentifiersInOneTranslationUnit,
+	"parameterCountInFunctionDefinition":                       parameterCountInFunctionDefinition,
+	"structuredBindingsInOneDeclaration":                       structuredBindingsInOneDeclaration,
+	"macroCountInOneTranslationUnit":                           macroCountInOneTranslationUnit,
+	"parametersInMacroDefinition":                              parametersInMacroDefinition,
+	"charactersInOneLogicalSourceLine":                         charactersInOneLogicalSourceLine,
+	"charactersInAStringLiteral":                               charactersInAStringLiteral,
+	"sizeOfAnObject":                                           sizeOfAnObject,
+	"nestingLevelsForIncludes":                                 nestingLevelsForIncludes,
+	"caseLabelsForSwitch":                                      caseLabelsForSwitch,
+	"nonStaticDataMembersOfClass":                              nonStaticDataMembersOfClass,
+	"lambdaCapturesInOneLambdaExpression":                      lambdaCapturesInOneLambdaExpression,
+	"enumerationConstantsInEnum":                               enumerationConstantsInEnum,
+	"nestingOfClasses":                                         nestingOfClasses,
+	"functionsRegisteredByatexit":                              functionsRegisteredByatexit,
+	"functionsRegisteredByat_quick_exit":                       functionsRegisteredByat_quick_exit,
+	"directAndIndirectBaseClassesOfClass":                      directAndIndirectBaseClassesOfClass,
+	"directBaseClassesOfClass":                                 directBaseClassesOfClass,
+	"classMembersDeclaredInASingleMemberSpecification":         classMembersDeclaredInASingleMemberSpecification,
+	"finalOverridingVirtualFunctions":                          finalOverridingVirtualFunctions,
+	"directAndIndirectVirtualBaseClassesOfClass":               directAndIndirectVirtualBaseClassesOfClass,
+	"staticDataMemberOfClass":                                  staticDataMemberOfClass,
+	"friendsOfAClass":                                          friendsOfAClass,
+	"accessControlDeclarationsInClass":                         accessControlDeclarationsInClass,
+	"memberInitializersInAConstructorDefinition":               memberInitializersInAConstructorDefinition,
+	"initializerClauseInBracedInitList":                        initializerClauseInBracedInitList,
+	"scopeQualificationOfOneIdentifier":                        scopeQualificationOfOneIdentifier,
+	"nestedLinkageSpecifiers":                                  nestedLinkageSpecifiers,
+	"recursiveConstexpr":                                       recursiveConstexpr,
+	"fullExpressionInAConst":                                   fullExpressionInAConst,
+	"templateParametersInTemplateDeclaration":                  templateParametersInTemplateDeclaration,
+	"recursivelyNestedTemplateInstantiations":                  recursivelyNestedTemplateInstantiations,
+	"handlersPerTryBlock":                                      handlersPerTryBlock,
+	"numberOfPlaceholders":                                     numberOfPlaceholders,
 }
 
 //
@@ -111,22 +112,22 @@ func nestingLevelOfConditionalInclusion(count string) string {
 	content := ""
 	requiredCount, _ := strconv.Atoi(count)
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "#define COND_" + strconv.Itoa(i) + " 1\n"
 	}
 
 	content += "\n"
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += repeat(" ", i) + "#ifdef COND_" + strconv.Itoa(i) + "\n"
 	}
 
 	content += "\n" + repeat(" ", requiredCount) + iostream
-	for i:=0; i<requiredCount; i++ {
-		content += repeat(" ", requiredCount - i - 1) + "#endif\n"
+	for i := 0; i < requiredCount; i++ {
+		content += repeat(" ", requiredCount-i-1) + "#endif\n"
 	}
 
-	content += "\nint main() {\n\tstd::cout << " + count +" << std::endl;\n}"
+	content += "\nint main() {\n\tstd::cout << " + count + " << std::endl;\n}"
 
 	return writeTestFile(trace(), count, content)
 }
@@ -146,7 +147,7 @@ func pointerAndArrayDeclaratorsModifyingSomething(count string) string {
 
 	for i := 2; i <= requiredCount; i++ {
 		content += "\tvolatile int "
-		for j := 2; j <i + 1; j++ {
+		for j := 2; j < i+1; j++ {
 			content += "*volatile "
 		}
 
@@ -156,12 +157,12 @@ func pointerAndArrayDeclaratorsModifyingSomething(count string) string {
 
 	content += "\n\t*"
 
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += " &0[*"
 	}
 
 	content += " &0[&p" + strconv.Itoa(requiredCount) + "]"
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += " ]"
 	}
 
@@ -207,7 +208,7 @@ func identifierOrMacroNameLength(count string) string {
 	content += "#define "
 	macroName := "M"
 	varName := "v"
-	for i:=1; i<requiredCount; i++ {
+	for i := 1; i < requiredCount; i++ {
 		macroName += string(rune(65 + rand.Intn(26)))
 		varName += string(rune(97 + rand.Intn(26)))
 	}
@@ -225,11 +226,11 @@ func externIdentifierNameLength(count string) string {
 	content := iostream
 	requiredCount, _ := strconv.Atoi(count)
 	varName := "v"
-	for i:=1; i<requiredCount; i++ {
+	for i := 1; i < requiredCount; i++ {
 		varName += string(rune(97 + rand.Intn(26)))
 	}
 
-	content += "int main() {\n\textern int " + varName +";\n\tstd::cout << " + varName + " << std::endl;\n}\n"
+	content += "int main() {\n\textern int " + varName + ";\n\tstd::cout << " + varName + " << std::endl;\n}\n"
 	content += "int " + varName + " = " + count + ";\n"
 
 	return writeTestFile(trace(), count, content)
@@ -243,7 +244,7 @@ func externIdentifiersInOneTranslationUnit(count string) string {
 	requiredCount, _ := strconv.Atoi(count)
 	content += "int main() {"
 	addition := "0"
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		varName := "v" + strconv.Itoa(i)
 		content += "\n\textern int " + varName + ";"
 		addition += " + " + varName
@@ -251,7 +252,7 @@ func externIdentifiersInOneTranslationUnit(count string) string {
 
 	content += "\n\tstd::cout << " + addition + " << std::endl;\n}\n"
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		varName := "v" + strconv.Itoa(i)
 
 		content += "int " + varName + " = 1;\n"
@@ -327,9 +328,9 @@ func structuredBindingsInOneDeclaration(count string) string {
 
 	content += "\nint main() {\n\tint arr[] = {"
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "1"
-		if i < requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += ", "
 		} else {
 			content += "};\n"
@@ -337,9 +338,9 @@ func structuredBindingsInOneDeclaration(count string) string {
 	}
 
 	content += "\tauto volatile ["
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "v" + strconv.Itoa(i)
-		if i < requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += ", "
 		} else {
 			content += "] = arr;\n"
@@ -348,9 +349,9 @@ func structuredBindingsInOneDeclaration(count string) string {
 
 	content += "\tint i = "
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "v" + strconv.Itoa(i)
-		if i < requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += " + "
 		} else {
 			content += ";\n\tstd::cout << i << std::endl;\n"
@@ -426,17 +427,17 @@ func charactersInOneLogicalSourceLine(count string) string {
 	requiredCount, _ := strconv.Atoi(count)
 	content += "int main() {\n"
 	content += "int a=" // 7 chars
-	if requiredCount % 2 == 1 {
+	if requiredCount%2 == 1 {
 		content += "9"
 	} else {
 		content += "8"
 	}
 
 	requiredCount -= 8
-	for i:=0; i<requiredCount/2; i++ {
+	for i := 0; i < requiredCount/2; i++ {
 		content += "+2"
 	}
-	if requiredCount % 2 == 1 {
+	if requiredCount%2 == 1 {
 		content += " "
 	}
 
@@ -454,7 +455,7 @@ func charactersInAStringLiteral(count string) string {
 	content += "int main() {\n"
 	content += "const char* a=\"\\\n"
 	cctr := 0
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		cctr += 1
 		if cctr == 80 {
 			cctr = 0
@@ -489,10 +490,10 @@ func nestingLevelsForIncludes(count string) string {
 	content := iostream
 	content += "#include \"inc/header1.h\"\n"
 	requiredCount, _ := strconv.Atoi(count)
-	for i:=1; i<requiredCount; i++ {
-		writeHeaderFile(i, "#include \"header" + strconv.Itoa(i + 1) + ".h\"\n")
+	for i := 1; i < requiredCount; i++ {
+		writeHeaderFile(i, "#include \"header"+strconv.Itoa(i+1)+".h\"\n")
 	}
-	writeHeaderFile(requiredCount, "const int v = " + strconv.Itoa(requiredCount) + ";\n")
+	writeHeaderFile(requiredCount, "const int v = "+strconv.Itoa(requiredCount)+";\n")
 
 	content += "int main() {\n"
 	content += "\tstd::cout << v << std::endl;\n}\n"
@@ -548,23 +549,23 @@ func lambdaCapturesInOneLambdaExpression(count string) string {
 	requiredCount, _ := strconv.Atoi(count)
 	content += "int main() {\n"
 
-	for i:=0; i< requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "\t int v" + strconv.Itoa(i) + " = 1;\n"
 	}
 
 	content += "\t auto lambda_ref = ["
-	for i:=0; i< requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "&v" + strconv.Itoa(i)
-		if i < requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += ", "
 		} else {
 			content += "]() -> int {\n"
 		}
 	}
 	content += "\t\treturn "
-	for i:=0; i< requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "v" + strconv.Itoa(i)
-		if i < requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += " + "
 		} else {
 			content += ";\n\t};\n"
@@ -706,12 +707,12 @@ func classMembersDeclaredInASingleMemberSpecification(count string) string {
 	requiredCount, _ := strconv.Atoi(count)
 
 	content += "class A {\npublic:\n\tint v1 = 1, "
-	for i:=2; i<=requiredCount; i++ {
-		if i % 10 == 0 {
+	for i := 2; i <= requiredCount; i++ {
+		if i%10 == 0 {
 			content += "\n\t\t"
 		}
 		content += "v" + strconv.Itoa(i) + " = v" + strconv.Itoa(i-1) + " + 1"
-		if i<requiredCount {
+		if i < requiredCount {
 			content += ", "
 		} else {
 			content += ";\n};"
@@ -751,19 +752,18 @@ func finalOverridingVirtualFunctions(count string) string {
 		cloc := strconv.Itoa(i)
 		classContent += "\tvirtual int func" + cloc + "() = 0;\n};\n\n"
 		publist += ", public Base" + strconv.Itoa(i)
-		generatedFunctions = append(generatedFunctions, "func" + cloc)
+		generatedFunctions = append(generatedFunctions, "func"+cloc)
 	}
 
-
 	classContent += "class Derived : public Base" + publist + "\n{\npublic:\n\tDerived()  = default;"
-	for i:=0; i< len(generatedFunctions); i++ {
+	for i := 0; i < len(generatedFunctions); i++ {
 		classContent += "\n\tint " + generatedFunctions[i] + "() override final {\n\t\tvolatile int value = 1;\n\t\treturn value;\n\t}"
 	}
 
 	classContent += "\n};\n"
 	mainContent := "\nint main() {\n\tDerived d; std::cout << 0"
 
-	for i:=0; i< len(generatedFunctions); i++ {
+	for i := 0; i < len(generatedFunctions); i++ {
 		mainContent += " + d." + generatedFunctions[i] + "()"
 	}
 
@@ -923,11 +923,11 @@ func memberInitializersInAConstructorDefinition(count string) string {
 	content += "class C {\npublic:\n\tC() : "
 
 	requiredCount, _ := strconv.Atoi(count)
-	for i:=1; i<= requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "m_" + strconv.Itoa(i) + "(1)"
-		if i<requiredCount {
+		if i < requiredCount {
 			content += ", "
-			if i % 50 == 0 {
+			if i%50 == 0 {
 				content += "\n\t\t"
 			}
 		} else {
@@ -935,16 +935,16 @@ func memberInitializersInAConstructorDefinition(count string) string {
 		}
 	}
 
-	for i:= 1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "\n\tint m_" + strconv.Itoa(i) + ";"
 	}
 
 	content += "\n\n\tvoid print() const {\n\t\tstd::cout <<"
-	for i:=1; i<= requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "m_" + strconv.Itoa(i)
-		if i<requiredCount {
+		if i < requiredCount {
 			content += " +  "
-			if i % 50 == 0 {
+			if i%50 == 0 {
 				content += "\n\t\t"
 			}
 		} else {
@@ -967,9 +967,9 @@ func initializerClauseInBracedInitList(count string) string {
 
 	content += "int main() {\n\tunsigned char c[] = {"
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += strconv.Itoa(i % 256)
-		if i < requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += ", "
 		} else {
 			content += "};\tvolatile unsigned long s = 0;\n\tfor (volatile unsigned long i=0; i< sizeof(c); i++) {\n\t s += c[i] || !c[i];\n\t}\n\n\tstd::cout << s << std::endl;"
@@ -987,17 +987,17 @@ func initializerClauseInBracedInitList(count string) string {
 func scopeQualificationOfOneIdentifier(count string) string {
 	content := iostream
 	requiredCnt, _ := strconv.Atoi(count)
-	for i:=1; i<=requiredCnt; i++ {
-		content += repeat(" ", i - 1) + "namespace ns" + strconv.Itoa(i) + " {\n"
+	for i := 1; i <= requiredCnt; i++ {
+		content += repeat(" ", i-1) + "namespace ns" + strconv.Itoa(i) + " {\n"
 	}
 	content += repeat(" ", requiredCnt) + "int i =" + count + ";\n"
-	for i:=requiredCnt; i>=1 ; i-- {
-		content += repeat(" ", i - 1) + "}\n"
+	for i := requiredCnt; i >= 1; i-- {
+		content += repeat(" ", i-1) + "}\n"
 	}
 
 	content += "\nint main() {\n\tstd::cout << "
 
-	for i:=1; i<=requiredCnt; i++ {
+	for i := 1; i <= requiredCnt; i++ {
 		content += "ns" + strconv.Itoa(i) + "::"
 	}
 
@@ -1013,16 +1013,16 @@ func nestedLinkageSpecifiers(count string) string {
 	content := iostream
 
 	requiredCnt, _ := strconv.Atoi(count)
-	for i:=0; i<requiredCnt; i++ {
-		content += repeat(" ", i - 1) + "extern \""
-		if i % 2 == 0 {
+	for i := 0; i < requiredCnt; i++ {
+		content += repeat(" ", i-1) + "extern \""
+		if i%2 == 0 {
 			content += "C"
 		} else {
 			content += "C++"
 		}
 		content += "\" { int f"
-		for j:=0; j<=i; j++ {
-			if j % 2 == 0 {
+		for j := 0; j <= i; j++ {
+			if j%2 == 0 {
 				content += "C"
 			} else {
 				content += "x"
@@ -1033,8 +1033,8 @@ func nestedLinkageSpecifiers(count string) string {
 	}
 
 	content += repeat(" ", requiredCnt) + "int fun() { return " + count + ";}\n"
-	for i:=requiredCnt; i>=1 ; i-- {
-		content += repeat(" ", i - 1) + "}\n"
+	for i := requiredCnt; i >= 1; i-- {
+		content += repeat(" ", i-1) + "}\n"
 	}
 
 	content += "\nint main() {\n\tstd::cout << fun() << std::endl;\n}"
@@ -1063,9 +1063,9 @@ func fullExpressionInAConst(count string) string {
 	content := iostream
 	requiredExprCnt, _ := strconv.Atoi(count)
 	content += "\nconst int i = 0"
-	for i:=1; i<requiredExprCnt; i++ {
+	for i := 1; i < requiredExprCnt; i++ {
 		content += "+1"
-		if i % 40 == 0 {
+		if i%40 == 0 {
 			content += "\n\t"
 		}
 	}
@@ -1081,26 +1081,26 @@ func templateParametersInTemplateDeclaration(count string) string {
 	content := iostream
 	requiredCount, _ := strconv.Atoi(count)
 	content += "\ntemplate<"
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "int N" + strconv.Itoa(i)
-		if i<requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += ","
 		} else {
 			content += ">\nstruct C {\n\tstatic const int v = "
 		}
 	}
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "N" + strconv.Itoa(i)
-		if i< requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += " + "
 		} else {
 			content += ";\n};\nint main() {\n\tC<"
 		}
 	}
 
-	for i:=0; i<requiredCount; i++ {
+	for i := 0; i < requiredCount; i++ {
 		content += "1"
-		if i< requiredCount - 1 {
+		if i < requiredCount-1 {
 			content += ","
 		} else {
 			content += "> c;\n\tstd::cout << c.v << std::endl;\n}\n"
@@ -1128,13 +1128,13 @@ func recursivelyNestedTemplateInstantiations(count string) string {
 func handlersPerTryBlock(count string) string {
 	content := iostream + "#include <exception>\n"
 	requiredCount, _ := strconv.Atoi(count)
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "class myexception" + strconv.Itoa(i) + " : public std::exception {\n"
 		content += "public:\n\tconst char* what() const noexcept override {\n\t\t"
 		content += "return \"" + strconv.Itoa(i) + "\";\n\t}\n};\n\n"
 	}
 	content += "int main() {\n\ttry {\n\t\tthrow myexception" + strconv.Itoa(requiredCount) + "();\n\t}"
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "\n\tcatch(const myexception" + strconv.Itoa(i) + "& e) {\n\t\t"
 		content += "std::cout << e.what() << std::endl;\n\t}"
 	}
@@ -1153,7 +1153,7 @@ func numberOfPlaceholders(count string) string {
 	content += "#include <functional>\n" +
 		"struct Summer {\n\tint calculate("
 
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "int p" + strconv.Itoa(i)
 		if i < requiredCount {
 			content += ", "
@@ -1162,34 +1162,34 @@ func numberOfPlaceholders(count string) string {
 		}
 	}
 
-	for i:=1; i<=requiredCount; i++ {
-		content += "p" + strconv.Itoa(i);
-		if i<requiredCount {
+	for i := 1; i <= requiredCount; i++ {
+		content += "p" + strconv.Itoa(i)
+		if i < requiredCount {
 			content += " + "
 		} else {
 			content += ";\t\t}\n};\nint main() {\n\tusing SUM = std::function<int("
 		}
 	}
 
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "int"
-		if i<requiredCount {
+		if i < requiredCount {
 			content += ","
 		} else {
 			content += ")>;\n\tSummer a;\n\tSUM f = std::bind(&Summer::calculate, &a,"
 		}
 	}
 
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "std::placeholders::_" + strconv.Itoa(i)
-		if i<requiredCount {
+		if i < requiredCount {
 			content += ","
 		} else {
 			content += ");\n\tstd::cout << f("
 		}
 	}
 
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "1"
 		if i < requiredCount {
 			content += ", "
@@ -1205,7 +1205,7 @@ func numberOfPlaceholders(count string) string {
 //                                                   Main                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func main() {
-	dat, err := ioutil.ReadFile("/home/fld/work/p/cpp-stresstest/testset.json")
+	dat, err := ioutil.ReadFile("testset.json")
 	check(err)
 	jsonErr := json.Unmarshal(dat, &testSet)
 	if jsonErr != nil {
@@ -1241,66 +1241,76 @@ func main() {
 		if testSet.Tests[i].Run {
 			for cnt := 0; cnt < len(testSet.Tests[i].Count); cnt++ {
 				currentCount := testSet.Tests[i].Count[cnt]
+				fmt.Println("Running:", testSet.Tests[i].TestName, " for ", currentCount)
 				fileName := funcMap[testSet.Tests[i].TestName].(func(string) string)(currentCount)
 				fileName = filepath.Base(fileName)
 
 				fileNames = append(fileNames, fileName)
 
 				currentTestName := testSet.Tests[i].TestName + "-" + currentCount
-				if testSet.GenerateMakefile {
+				if runtime.GOOS != "windows" {
+					if testSet.GenerateMakefile {
 
-					makefileContent += testSet.Tests[i].TestName + "-" + currentCount + ": " + fileName + "\n"
+						makefileContent += testSet.Tests[i].TestName + "-" + currentCount + ": " + fileName + "\n"
 
-					if testSet.TimedCompilation {
-						if testSet.ResultFormat == "XML" {
-							makefileContent += "\t@echo '<test name=\"" + currentTestName + "\">';\\\n"
-						} else {
-							makefileContent += "\t@echo " + testSet.Tests[i].TestName + "-" + currentCount + ";\\\n"
-						}
-					}
-					if testSet.CompilationTimes > 1 {
-
-						makefileContent += "\tnumber=1 ; for number in "
-						for c := 1; c <= testSet.CompilationTimes; c++ {
-							makefileContent += strconv.Itoa(c) + " "
-						}
-						makefileContent += "; do \\\n\t\t"
-						if testSet.TimedCompilation {
-							makefileContent += "/usr/bin/time " + testSet.TimeFlags + " "
-						}
-						makefileContent += "$(CXX) $(CXXFLAGS) -o " + testSet.Tests[i].TestName + "-" + currentCount + " " + fileName + "; \\\n\tdone"
 						if testSet.TimedCompilation {
 							if testSet.ResultFormat == "XML" {
-								makefileContent += "\\\n\techo '</test>';"
+								makefileContent += "\t@echo '<test name=\"" + currentTestName + "\">';\\\n"
+							} else {
+								makefileContent += "\t@echo " + testSet.Tests[i].TestName + "-" + currentCount + ";\\\n"
 							}
 						}
-						makefileContent += "\n"
-					} else {
-						makefileContent += "\t"
-						if testSet.TimedCompilation {
-							makefileContent += "/usr/bin/time " + testSet.TimeFlags + " "
-						}
-						makefileContent += "$(CXX) $(CXXFLAGS) -o " + testSet.Tests[i].TestName + "-" + currentCount + " " + fileName + "\n\n"
-					}
-					all += testSet.Tests[i].TestName + "-" + currentCount + " "
+						if testSet.CompilationTimes > 1 {
 
-					clean += "\trm " + testSet.Tests[i].TestName + "-" + currentCount + "\n"
+							makefileContent += "\tnumber=1 ; for number in "
+							for c := 1; c <= testSet.CompilationTimes; c++ {
+								makefileContent += strconv.Itoa(c) + " "
+							}
+							makefileContent += "; do \\\n\t\t"
+							if testSet.TimedCompilation {
+								makefileContent += "/usr/bin/time " + testSet.TimeFlags + " "
+							}
+							makefileContent += "$(CXX) $(CXXFLAGS) -o " + testSet.Tests[i].TestName + "-" + currentCount + " " + fileName + "; \\\n\tdone"
+							if testSet.TimedCompilation {
+								if testSet.ResultFormat == "XML" {
+									makefileContent += "\\\n\techo '</test>';"
+								}
+							}
+							makefileContent += "\n"
+						} else {
+							makefileContent += "\t"
+							if testSet.TimedCompilation {
+								makefileContent += "/usr/bin/time " + testSet.TimeFlags + " "
+							}
+							makefileContent += "$(CXX) $(CXXFLAGS) -o " + testSet.Tests[i].TestName + "-" + currentCount + " " + fileName + "\n\n"
+						}
+						all += testSet.Tests[i].TestName + "-" + currentCount + " "
+
+						clean += "\trm " + testSet.Tests[i].TestName + "-" + currentCount + "\n"
+					}
 				}
 
 				if testSet.GenerateCMakeListsTxt {
-					cmakeContent += "add_executable(" + currentTestName + " " + fileName + " )\n"
+					cmakeContent += "# " + testSet.Tests[i].Description + " - " + currentCount + "\n"
+					if runtime.GOOS == "windows" {
+						cmakeContent += "if (MSVC)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /bigobj)\nendif()\n"
+					}
+
+					cmakeContent += "add_executable(" + currentTestName + " " + fileName + " )\n\n"
 				}
 			}
 		}
 	}
 
-	if testSet.GenerateMakefile {
-		makefileName := dir + "/" + testSet.SetName + "/Makefile"
-		f, err := os.Create(makefileName)
-		check(err)
-		defer f.Close()
+	if runtime.GOOS != "windows" {
+		if testSet.GenerateMakefile {
+			makefileName := dir + "/" + testSet.SetName + "/Makefile"
+			f, err := os.Create(makefileName)
+			check(err)
+			defer f.Close()
 
-		f.WriteString(makefileHeader + "\n" + all + "\n\n" + makefileContent + "\n\n" + clean + "\n")
+			f.WriteString(makefileHeader + "\n" + all + "\n\n" + makefileContent + "\n\n" + clean + "\n")
+		}
 	}
 
 	if testSet.GenerateCMakeListsTxt {

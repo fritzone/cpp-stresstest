@@ -51,7 +51,7 @@ type TestSet struct {
 	TimeFlags             string      `json:"timeFlags"`
 	TimedCompilation      bool        `json:"timedCompilation"`
 	ResultFormat          string      `json:"resultFormat"`
-	Compiler              string      `json:compiler`
+	Compiler              string      `json:"compiler"`
 	Tests                 []TestEntry `json:"tests"`
 }
 
@@ -129,20 +129,20 @@ func repeat(what string, times int) string {
 func atexitHelper(count, funcname string) string {
 	content := iostream
 	requiredCount, _ := strconv.Atoi(count)
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		content += "\nvoid handler" + strconv.Itoa(i) + "() {\n\tstd::cout << \".\"  "
-		if  funcname == "at_quick_exit" {
+		if funcname == "at_quick_exit" {
 			content += "<< std::endl"
 		}
 		content += ";\n}"
 	}
 
 	content += "\nint main() {"
-	for i:=1; i<=requiredCount; i++ {
+	for i := 1; i <= requiredCount; i++ {
 		ci := strconv.Itoa(i)
 		content += "\n\tconst int r" + ci + " = std::" + funcname + "(handler" + ci + ");"
 		content += "\n\tif(r" + ci + " != 0) {"
-		content += "\n\t\tstd::cout << " + strconv.Itoa(i - 1) + " << std::endl;"
+		content += "\n\t\tstd::cout << " + strconv.Itoa(i-1) + " << std::endl;"
 		content += "\n\t\treturn EXIT_FAILURE;"
 		content += "\n\t}"
 	}
@@ -200,7 +200,7 @@ func generateClassHierarchy(node *treeNode, classContent *string, caller string,
 		*classContent += node.right.data
 	}
 
-	if caller == "directAndIndirectBaseClassesOfClass"  || caller == "directAndIndirectVirtualBaseClassesOfClass" {
+	if caller == "directAndIndirectBaseClassesOfClass" || caller == "directAndIndirectVirtualBaseClassesOfClass" {
 		*classContent += "\n{\npublic: \n\t" + node.data + "() : m_i(ctr ++) { std::cout << m_i << std::endl; }\nprivate:\n\tint m_i;\n};\n\n"
 	} else if caller == "finalOverridingVirtualFunctions" {
 		runes := []rune(node.data)
@@ -211,7 +211,7 @@ func generateClassHierarchy(node *treeNode, classContent *string, caller string,
 	}
 }
 
-func generateClassHierarchyWitClasses(count string, virtual bool, testname string ) string {
+func generateClassHierarchyWitClasses(count string, virtual bool, testname string) string {
 	requiredBaseCnt, _ := strconv.Atoi(count)
 	saveBaseCnt := requiredBaseCnt
 
