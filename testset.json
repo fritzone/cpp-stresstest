@@ -190,9 +190,9 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "directAndIndirectBaseClassesOfClass",
-      "count" : [ "16384" ],
+      "count" : [ "65536" ],
       "minimum" : "16384",
       "description" : "(2.26) Direct and indirect base classes ([class.derived]) [16 384]"
     },
@@ -200,7 +200,7 @@
     {
       "run": false,
       "testName" : "directBaseClassesOfClass",
-      "count" : ["1024"],
+      "count" : ["4096"],
       "minimum" : "1024",
       "description" : "(2.27) Direct base classes for a single class ([class.derived]) [1 024]"
     },
@@ -216,7 +216,7 @@
     {
       "run": false,
       "testName": "finalOverridingVirtualFunctions",
-      "count": ["32768"],
+      "count": ["8192"],
       "minimum": "16384",
       "description": "(2.29) Final overriding virtual functions in a class, accessible or not ([class.virtual]) [16 384]."
     },
@@ -224,7 +224,7 @@
     {
       "run": false,
       "testName": "directAndIndirectVirtualBaseClassesOfClass",
-      "count": ["65535"],
+      "count": ["4096"],
       "minimum": "1024",
       "description": "(2.30) Direct and indirect virtual bases of a class ([class.mi]) [1 024]."
     },
@@ -272,14 +272,14 @@
     {
       "run": false,
       "testName": "scopeQualificationOfOneIdentifier",
-      "count": ["1024"],
+      "count": ["128"],
       "minimum": "256",
       "description": "(2.36) Scope qualifications of one identifier ([expr.prim.id.qual]) [256]."
     },
 
     {
-      "run": true,
-      "count": ["8192"],
+      "run": false,
+      "count": ["736"],
       "testName": "nestedLinkageSpecifiers",
       "minimum": "1024",
       "description": "(2.37) Nested linkage-specifications ([dcl.link]) [1 024]."
