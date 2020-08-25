@@ -14,7 +14,7 @@
   "tests": [
 
     {
-      "run": false,
+      "run": true,
       "testName" : "nestingOfStatements",
       "count" : ["256"],
       "minimum" : "256",
@@ -22,7 +22,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "nestingLevelOfConditionalInclusion",
       "count": ["512"],
       "minimum": "256",
@@ -30,7 +30,7 @@
     },
 
    {
-      "run": false,
+      "run": true,
       "testName": "pointerAndArrayDeclaratorsModifyingSomething",
       "count": ["1024"],
       "minimum": "256",
@@ -38,7 +38,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "nestingLevelsOfParenthesizedExpressionsInAFullExpression",
       "count": [ "256" ],
       "minimum": "256",
@@ -46,7 +46,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "identifierOrMacroNameLength",
       "count": ["8192"],
       "minimum": "1024",
@@ -54,7 +54,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "externIdentifierNameLength",
       "count": ["8192"],
       "minimum": "1024",
@@ -62,7 +62,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "externIdentifiersInOneTranslationUnit",
       "count": ["65536"],
       "minimum": "65536",
@@ -70,7 +70,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "structuredBindingsInOneDeclaration",
       "count": ["8192"],
       "minimum": "256",
@@ -78,7 +78,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "macroCountInOneTranslationUnit",
       "count" : ["65536"],
       "minimum" : "65536",
@@ -86,7 +86,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "parameterCountInFunctionDefinition",
       "count": [ "256"],
       "minimum": "256",
@@ -94,7 +94,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "parametersInMacroDefinition",
       "count" : ["256"],
       "minimum" : "256",
@@ -102,7 +102,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "charactersInOneLogicalSourceLine",
       "count": ["65536"],
       "minimum": "65536",
@@ -110,7 +110,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "charactersInAStringLiteral",
       "count": ["131072"],
       "minimum": "65536",
@@ -118,7 +118,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "sizeOfAnObject",
       "count": ["2097152"],
       "minimum": "262144",
@@ -126,7 +126,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "nestingLevelsForIncludes",
       "count": ["199"],
       "minimum": "256",
@@ -134,7 +134,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "caseLabelsForSwitch",
       "count" : ["16384"],
       "minimum" : "16384",
@@ -142,7 +142,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "nonStaticDataMembersOfClass",
       "count" : ["65536"],
       "minimum" : "16384",
@@ -150,7 +150,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "lambdaCapturesInOneLambdaExpression",
       "count": ["8192"],
       "minimum": "256",
@@ -158,7 +158,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "enumerationConstantsInEnum",
       "count" : ["4096"],
       "minimum" : "4096",
@@ -166,7 +166,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "nestingOfClasses",
       "count" : ["256"],
       "minimum" : "256",
@@ -174,7 +174,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "functionsRegisteredByatexit",
       "count": ["64"],
       "minimum": "32",
@@ -182,7 +182,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "functionsRegisteredByat_quick_exit",
       "count": ["8192"],
       "minimum": "32",
@@ -198,7 +198,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "directBaseClassesOfClass",
       "count" : ["4096"],
       "minimum" : "1024",
@@ -206,7 +206,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "classMembersDeclaredInASingleMemberSpecification",
       "count": ["16384"],
       "minimum": "4096",
@@ -214,7 +214,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "finalOverridingVirtualFunctions",
       "count": ["8192"],
       "minimum": "16384",
@@ -222,7 +222,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "directAndIndirectVirtualBaseClassesOfClass",
       "count": ["4096"],
       "minimum": "1024",
@@ -230,7 +230,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "staticDataMemberOfClass",
       "count" : [ "16384"],
       "minimum" : "1024",
@@ -238,7 +238,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "friendsOfAClass",
       "count" : ["8192"],
       "minimum" : "4096",
@@ -246,7 +246,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName" : "accessControlDeclarationsInClass",
       "count" : ["16384"],
       "minimum" : "4096",
@@ -254,7 +254,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "memberInitializersInAConstructorDefinition",
       "count": ["16384"],
       "minimum": "6144",
@@ -262,7 +262,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "initializerClauseInBracedInitList",
       "count": ["262144"],
       "minimum": "16384",
@@ -270,7 +270,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "scopeQualificationOfOneIdentifier",
       "count": ["128"],
       "minimum": "256",
@@ -278,7 +278,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "count": ["736"],
       "testName": "nestedLinkageSpecifiers",
       "minimum": "1024",
@@ -286,7 +286,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "recursiveConstexpr",
       "count": ["512"],
       "minimum": "512",
@@ -294,7 +294,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "fullExpressionInAConst",
       "count": ["1048576"],
       "minimum": "1048576",
@@ -302,7 +302,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "templateParametersInTemplateDeclaration",
       "count": ["1024"],
       "minimum": "1024",
@@ -310,7 +310,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "recursivelyNestedTemplateInstantiations",
       "count": ["1024"],
       "minimum": "1024",
@@ -318,7 +318,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "handlersPerTryBlock",
       "count": ["256"],
       "minimum": "256",
@@ -326,7 +326,7 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "numberOfPlaceholders",
       "count": ["10"],
       "minimum": "10",

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"time"
 )
 
 // the map which maps the name of a test case from the json file to a go function
@@ -1266,7 +1267,7 @@ func main() {
 				fileNames = append(fileNames, fileName)
 
 				currentTestName := testSet.Tests[i].TestName + "-" + currentCount
-				fmt.Println("Running:", currentTestName)
+				fmt.Println("Running:", currentTestName, time.Now().Format(time.RFC3339Nano))
 
 				if runtime.GOOS != "windows" {
 
