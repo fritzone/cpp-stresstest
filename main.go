@@ -21,6 +21,7 @@ var funcMap = map[string]interface{}{
 	"identifierOrMacroNameLength":                              identifierOrMacroNameLength,
 	"externIdentifierNameLength":                               externIdentifierNameLength,
 	"externIdentifiersInOneTranslationUnit":                    externIdentifiersInOneTranslationUnit,
+	"identifiersWithBlockScopeDeclaredInOneBlock":              identifiersWithBlockScopeDeclaredInOneBlock,
 	"parameterCountInFunctionDefinition":                       parameterCountInFunctionDefinition,
 	"structuredBindingsInOneDeclaration":                       structuredBindingsInOneDeclaration,
 	"macroCountInOneTranslationUnit":                           macroCountInOneTranslationUnit,
@@ -266,6 +267,22 @@ func externIdentifiersInOneTranslationUnit(count string) string {
 
 //
 // (2.8) Identifiers with block scope declared in one block ([basic.scope.block]) [1 024].
+func identifiersWithBlockScopeDeclaredInOneBlock(count string) string {
+	requiredParameterCount, _ := strconv.Atoi(count)
+	content := iostream
+
+	// generate the identifiers as local (volatile) variables
+	content += "\nint main() {\n"
+	for i := 0; i < requiredParameterCount; i++ {
+		idx := i % len(cppPrimitiveTypes)
+		content += "\tvolatile " + cppPrimitiveTypes[idx].name + " arg" + strconv.Itoa(i) + " = " + oneAsType(idx) + ";\n"
+	}
+
+	content += "\tstd::cout << " + count + " << std::endl; \n\treturn 0;\n}\n"
+	return writeTestFile(trace(), count, content)
+
+}
+
 // (2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and
 // (2.12) Arguments in one function call ([expr.call]) [256].
 //
