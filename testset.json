@@ -1,5 +1,5 @@
 {
-  "setName": "Standard1",
+  "setName": "Standard",
   "randomBehaviour" : false,
 
   "generateMakefile": true,
@@ -16,7 +16,7 @@
     {
       "run": false,
       "testName" : "nestingOfStatements",
-      "count" : ["256"],
+      "count" : ["164"],
       "minimum" : "256",
       "description" : "(2.1) Nesting levels of compound statements ([stmt.block]), iteration control structures ([stmt.iter]), and selection control structures ([stmt.select]) [256]."
     },
@@ -48,7 +48,7 @@
     {
       "run": false,
       "testName": "identifierOrMacroNameLength",
-      "count": ["8192"],
+      "count": ["2048"],
       "minimum": "1024",
       "description": "(2.5) Number of characters in an internal identifier ([lex.name]) or macro name ([cpp.replace]) [1 024]."
     },
@@ -56,7 +56,7 @@
     {
       "run": false,
       "testName": "externIdentifierNameLength",
-      "count": ["8192"],
+      "count": ["2048"],
       "minimum": "1024",
       "description": "(2.6) Number of characters in an external identifier ([lex.name], [basic.link]) [1 024]."
     },
@@ -64,7 +64,7 @@
     {
       "run": false,
       "testName": "externIdentifiersInOneTranslationUnit",
-      "count": ["4096"],
+      "count": ["65536"],
       "minimum": "65536",
       "description": "(2.7) External identifiers ([basic.link]) in one translation unit [65 536]."
     },
@@ -88,7 +88,7 @@
     {
       "run": false,
       "testName" : "macroCountInOneTranslationUnit",
-      "count" : ["65536"],
+      "count" : ["128"],
       "minimum" : "65536",
       "description" : "(2.10) Macro identifiers ([cpp.replace]) simultaneously defined in one translation unit [65 536]."
     },
@@ -96,7 +96,7 @@
     {
       "run": false,
       "testName": "parameterCountInFunctionDefinition",
-      "count": [ "256"],
+      "count": [ "4096"],
       "minimum": "256",
       "description": "(2.11) Parameters in one function definition ([dcl.fct.def.general]) [256] and (2.12) Arguments in one function call ([expr.call]) [256]."
     },
@@ -120,7 +120,7 @@
     {
       "run": false,
       "testName": "charactersInAStringLiteral",
-      "count": ["131072"],
+      "count": ["12288"],
       "minimum": "65536",
       "description": "(2.16) Characters in a string literal ([lex.string]) (after concatenation ([lex.phases])) [65 536]."
     },
@@ -128,7 +128,7 @@
     {
       "run": false,
       "testName": "sizeOfAnObject",
-      "count": ["2097152"],
+      "count": ["524288"],
       "minimum": "262144",
       "description": "(2.17) Size of an object ([intro.object]) [262 144]."
     },
@@ -152,7 +152,7 @@
     {
       "run": false,
       "testName" : "nonStaticDataMembersOfClass",
-      "count" : ["2048"],
+      "count" : ["65536"],
       "minimum" : "16384",
       "description" : "(2.20) Non-static data members (including inherited ones) in a single class ([class.mem]) [16 384]"
     },
@@ -160,7 +160,7 @@
     {
       "run": false,
       "testName": "lambdaCapturesInOneLambdaExpression",
-      "count": ["4096"],
+      "count": ["8192"],
       "minimum": "256",
       "description": "(2.21) Lambda-captures in one lambda-expression ([expr.prim.lambda.capture]) [256]."
     },
@@ -192,7 +192,7 @@
     {
       "run": false,
       "testName": "functionsRegisteredByat_quick_exit",
-      "count": ["8192"],
+      "count": ["64"],
       "minimum": "32",
       "description": "(2.25) Functions registered by at_quick_exit() ([support.start.term]) [32]."
     },
@@ -200,7 +200,7 @@
     {
       "run": false,
       "testName" : "directAndIndirectBaseClassesOfClass",
-      "count" : [ "65536" ],
+      "count" : [ "65535" ],
       "minimum" : "16384",
       "description" : "(2.26) Direct and indirect base classes ([class.derived]) [16 384]"
     },
@@ -262,7 +262,7 @@
     },
 
     {
-      "run": true,
+      "run": false,
       "testName": "memberInitializersInAConstructorDefinition",
       "count": ["4096"],
       "minimum": "6144",
@@ -302,9 +302,9 @@
     },
 
     {
-      "run": false,
+      "run": true,
       "testName": "fullExpressionInAConst",
-      "count": ["1048576"],
+      "count": ["65536"],
       "minimum": "1048576",
       "description": "(2.39) Full-expressions evaluated within a core constant expression ([expr.const]) [1 048 576]."
     },
@@ -320,7 +320,7 @@
     {
       "run": false,
       "testName": "recursivelyNestedTemplateInstantiations",
-      "count": ["1024"],
+      "count": ["512"],
       "minimum": "1024",
       "description": "(2.41) Recursively nested template instantiations ([temp.inst]), including substitution during template argument deduction ([temp.deduct]) [1 024]."
     },
@@ -328,7 +328,7 @@
     {
       "run": false,
       "testName": "handlersPerTryBlock",
-      "count": ["256"],
+      "count": ["8192"],
       "minimum": "256",
       "description": "(2.42) Handlers per try block ([except.handle]) [256]."
     },
@@ -336,7 +336,7 @@
     {
       "run": false,
       "testName": "numberOfPlaceholders",
-      "count": ["10"],
+      "count": ["29"],
       "minimum": "10",
       "description": "(2.43) Number of placeholders [10]."
     }

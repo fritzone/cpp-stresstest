@@ -527,7 +527,7 @@ func nestingLevelsForIncludes(count string) string {
 func caseLabelsForSwitch(count string) string {
 	requiredLabelCnt, _ := strconv.Atoi(count)
 
-	content := "\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
+	content := "#include<ctime>\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
 	for i := 0; i < requiredLabelCnt; i++ {
 		content += "\t\tcase " + strconv.Itoa(i) + ": std::cout << " + strconv.Itoa(i*i) + " << std::endl; break;\n"
 	}
@@ -1330,9 +1330,9 @@ func main() {
 				}
 
 				if testSet.GenerateCMakeListsTxt {
-					cmakeContent += "# " + testSet.Tests[i].Description + " - " + currentCount + "\n"
+					cmakeContent += "# " + currentTestName + "\n"
 					if runtime.GOOS == "windows" {
-						cmakeContent += "if (MSVC)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /bigobj)\nendif()\n"
+						cmakeContent += "if (1)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /constexpr:depth16384)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /bigobj)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /std:c++17)\nendif()\n"
 					}
 
 					cmakeContent += "add_executable(" + currentTestName + " " + fileName + " )\n\n"
