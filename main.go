@@ -499,7 +499,7 @@ func sizeOfAnObject(count string) string {
 		"{\n\tfor(auto i=0ULL; i<sizeof(c); i++) {\n\t\tif(c[i] * 256 == i && i > 0) {\n\t\t\tstd::cout << i ;\n\t\t}\n\t}" +
 		"\n\t\tvolatile auto x = sizeof(*this);\n\t\tstd::cout << x << std::endl;\n\t}\nprivate:\n\n\tunsigned char c[" +
 		count +
-		"];\n\n};\nint main() {\n\tA a;\n\ta.printer();\n}\n"
+		"];\n\n};\nint main() {\n\tstatic A a;\n\ta.printer();\n}\n"
 
 	return writeTestFile(trace(), count, content)
 }
