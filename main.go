@@ -499,7 +499,7 @@ func sizeOfAnObject(count string) string {
 		"{\n\tfor(auto i=0ULL; i<sizeof(c); i++) {\n\t\tif(c[i] * 256 == i && i > 0) {\n\t\t\tstd::cout << i ;\n\t\t}\n\t}" +
 		"\n\t\tvolatile auto x = sizeof(*this);\n\t\tstd::cout << x << std::endl;\n\t}\nprivate:\n\n\tunsigned char c[" +
 		count +
-		"];\n\n};\nint main() {\n\tA a;\n\ta.printer();\n}\n"
+		"];\n\n};\nint main() {\n\tstatic A a;\n\ta.printer();\n}\n"
 
 	return writeTestFile(trace(), count, content)
 }
@@ -527,7 +527,7 @@ func nestingLevelsForIncludes(count string) string {
 func caseLabelsForSwitch(count string) string {
 	requiredLabelCnt, _ := strconv.Atoi(count)
 
-	content := "\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
+	content := "#include<ctime>\n#include<cstdlib>\n\nint main() {\n\tsrand(time(NULL));\tint v = rand() % " + count + " + 1;\n\tswitch(v) {\n"
 	for i := 0; i < requiredLabelCnt; i++ {
 		content += "\t\tcase " + strconv.Itoa(i) + ": std::cout << " + strconv.Itoa(i*i) + " << std::endl; break;\n"
 	}
@@ -1330,9 +1330,9 @@ func main() {
 				}
 
 				if testSet.GenerateCMakeListsTxt {
-					cmakeContent += "# " + testSet.Tests[i].Description + " - " + currentCount + "\n"
+					cmakeContent += "# " + currentTestName + "\n"
 					if runtime.GOOS == "windows" {
-						cmakeContent += "if (MSVC)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /bigobj)\nendif()\n"
+						cmakeContent += "if (1)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /constexpr:depth16384)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /bigobj)\n  set_source_files_properties(" + fileName + " PROPERTIES COMPILE_FLAGS /std:c++17)\nendif()\n"
 					}
 
 					cmakeContent += "add_executable(" + currentTestName + " " + fileName + " )\n\n"
